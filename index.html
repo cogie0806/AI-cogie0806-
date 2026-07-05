@@ -6,15 +6,15 @@
 </head>
 <body style="margin: 0; background-image: url('ai-haikei.jpg'); background-size: cover; background-position: center; font-family: sans-serif; color: #333333; display: flex; flex-direction: column; height: 100vh;">
 
-    <!-- 上のバー（バージョン2.1になりました！） -->
+    <!-- 上のバー（バージョン2.2になりました！） -->
     <div style="background-color: rgba(240, 242, 245, 0.9); padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid #e0e0e0; color: #000000; backdrop-filter: blur(5px);">
-        🤖 AI/cogie0806 (バージョン2.1 - アイコン画像対応版)
+        🤖 AI/cogie0806 (バージョン2.2 - 社会の勉強対応版)
     </div>
 
     <!-- チャットの文字が出るエリア -->
     <div id="chat-box" style="flex: 1; padding: 20px; overflow-y: auto; font-size: 18px; line-height: 1.6; background-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(3px); display: flex; flex-direction: column; gap: 15px;">
         
-        <!-- 【新機能】AIの最初のあいさつに、きみの rootto.jpg アイコンを合体させたよ！ -->
+        <!-- AIの最初のあいさつ -->
         <div style="display: flex; align-items: flex-start; gap: 10px; align-self: flex-start; max-width: 70%;">
             <img src="rootto.jpg" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 0px 1px 3px rgba(0,0,0,0.2);">
             <div style="background-color: #ffffff; padding: 12px 16px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff;">
@@ -27,7 +27,7 @@
     <!-- 下の文字を入力するところ -->
     <div style="background-color: rgba(240, 242, 245, 0.9); padding: 20px; display: flex; gap: 10px; border-top: 1px solid #e0e0e0; backdrop-filter: blur(5px);">
         <input type="text" id="user-input" placeholder="ここにメッセージを入力してね..." style="flex: 1; padding: 14px 20px; font-size: 16px; border: 1px solid #ccc; border-radius: 25px; outline: none; background-color: #ffffff; color: #000000; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);">
-        <button onclick="sendButton()" style="padding: 12px 28px; font-size: 16px; background-color: #0084ff; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">送信</button>
+        <button onclick="sendButton()" style="padding: 12px 24px; font-size: 16px; background-color: #0084ff; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">送信</button>
     </div>
 
     <!-- 音楽ファイルを読み込む楽器 -->
@@ -72,14 +72,18 @@
             aisatsu = "こんばんは";
         }
 
+        // 【新機能】小学4年生の社会クイズに対応！
+        if (userText.includes("埼玉県") || userText.includes("さいたま県") || userText.includes("県庁所在地")) {
+            aiReply = "埼玉県の県庁所在地は 【 さいたま市 】 だよ！ひらがなで書くのがテストのコツだよ！社会の勉強えらい！";
+        }
         // サイコロの仕組み
-        if (userText.includes("サイコロ") || userText.includes("さいころ")) {
+        else if (userText.includes("サイコロ") || userText.includes("さいころ")) {
             const dice = Math.floor(Math.random() * 6) + 1;
             aiReply = `コロコロ…🎲 サイコロの目は 【 ${dice} 】 が出たよ！`;
         }
         // おみくじの仕組み
         else if (userText.includes("おみくじ") || userText.includes("オミクジ")) {
-            const kujilist = ["凶（きょう）😭", "吉（きち）🙂", "中吉（ちゅうきち）✨", "大吉（だいきち）🎉", "大大吉（だいだいきち）👑🌟"];
+            const kujilist = ["凶（きょう）😭", "吉（きち）🙂", "中吉（ちゅうきち）✨", "大吉（だいきち）🎉", "大大吉（だいだイクジ）👑🌟"];
             const randomKuji = kujilist[Math.floor(Math.random() * kujilist.length)];
             aiReply = `シャカシャカ…ポロン！ 今日の運勢は… 【 ${randomKuji} 】 です！`;
         }
@@ -120,7 +124,7 @@
             }
         }
 
-        // 【新機能】AIのお返事（左側）の横に、丸くした rootto.jpg を出すようにしたよ！
+        // AIのお返事（左側）
         setTimeout(() => {
             chatBox.innerHTML += `
                 <div style="display: flex; align-items: flex-start; gap: 10px; align-self: flex-start; max-width: 70%;">
