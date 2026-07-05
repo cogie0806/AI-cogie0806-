@@ -4,23 +4,27 @@
     <meta charset="UTF-8">
     <title>AI/cogie0806</title>
 </head>
-<body style="margin: 0; background-color: #ffffff; font-family: sans-serif; color: #333333; display: flex; flex-direction: column; height: 100vh;">
+<!-- 【ここを変えたよ！】背景をまっ白から、きみが用意してくれた画像ファイル（ai-haikei.jpg）に変更しました -->
+<body style="margin: 0; background-image: url('ai-haikei.jpg'); background-size: cover; background-position: center; font-family: sans-serif; color: #333333; display: flex; flex-direction: column; height: 100vh;">
 
-    <!-- 上のバー -->
-    <div style="background-color: #f0f2f5; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid #e0e0e0; color: #000000;">
-        🤖 AI/cogie0806 (バージョン1.8 - ゲーム機能付き)
+    <!-- 上のバー（バージョン1.9になりました！） -->
+    <div style="background-color: rgba(240, 242, 245, 0.9); padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid #e0e0e0; color: #000000; backdrop-filter: blur(5px);">
+        🤖 AI/cogie0806 (バージョン1.9 - 背景＆サウンド対応版)
     </div>
 
-    <!-- チャットの文字が出るエリア -->
-    <div id="chat-box" style="flex: 1; padding: 20px; overflow-y: auto; font-size: 18px; line-height: 1.6; background-color: #ffffff;">
+    <!-- チャットの文字が出るエリア（透き通るように、少し透明な白色にしました） -->
+    <div id="chat-box" style="flex: 1; padding: 20px; overflow-y: auto; font-size: 18px; line-height: 1.6; background-color: rgba(255, 255, 255, 0.7); backdrop-filter: blur(3px);">
         <div style="margin-bottom: 15px; color: #0084ff;"><b>[AI/cogie0806]:</b> こんにちは！質問（しつもん）をどうぞ！</div>
     </div>
 
     <!-- 下の文字を入力するところ -->
-    <div style="background-color: #f0f2f5; padding: 20px; display: flex; gap: 10px; border-top: 1px solid #e0e0e0;">
+    <div style="background-color: rgba(240, 242, 245, 0.9); padding: 20px; display: flex; gap: 10px; border-top: 1px solid #e0e0e0; backdrop-filter: blur(5px);">
         <input type="text" id="user-input" placeholder="ここにメッセージを入力してね..." style="flex: 1; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; outline: none; background-color: #ffffff; color: #000000;">
         <button onclick="sendButton()" style="padding: 12px 24px; font-size: 16px; background-color: #0084ff; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">送信</button>
     </div>
+
+    <!-- 【新機能】きみが用意してくれた piko.mp3 を読み込むための目に見えない楽器だよ -->
+    <audio id="piko-sound" src="piko.mp3" preload="auto"></audio>
 
     <!-- AIが考える仕組み -->
     <script>
@@ -29,6 +33,13 @@
         const userText = inputElement.value.trim();
         
         if (userText === "") return;
+
+        // 【新機能】送信ボタンが押されたら、piko.mp3 をピコッと鳴らす魔法のコードだよ
+        const sound = document.getElementById("piko-sound");
+        sound.currentTime = 0; // 音の最初に戻す
+        sound.play().catch(error => {
+            console.log("最初の1回は画面をどこかクリックしてから送信してね！");
+        });
 
         const chatBox = document.getElementById("chat-box");
 
@@ -51,12 +62,12 @@
             aisatsu = "こんばんは";
         }
 
-        // 【新機能①】サイコロの仕組み
+        // サイコロの仕組み
         if (userText.includes("サイコロ") || userText.includes("さいころ")) {
             const dice = Math.floor(Math.random() * 6) + 1;
             aiReply = `コロコロ…🎲 サイコロの目は 【 ${dice} 】 が出たよ！`;
         }
-        // 【新機能②】おみくじの仕組み（ここをハイフンからピリオドに全部直したよ！）
+        // おみくじの仕組み
         else if (userText.includes("おみくじ") || userText.includes("オミクジ")) {
             const kujilist = ["凶（きょう）😭", "吉（きち）🙂", "中吉（ちゅうきち）✨", "大吉（だいきち）🎉", "大大吉（だいだいきち）👑🌟"];
             const randomKuji = kujilist[Math.floor(Math.random() * kujilist.length)];
