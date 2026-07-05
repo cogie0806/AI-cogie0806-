@@ -6,9 +6,9 @@
 </head>
 <body style="margin: 0; background-image: url('ai-haikei.jpg'); background-size: cover; background-position: center; font-family: sans-serif; color: #333333; display: flex; flex-direction: column; height: 100vh;">
 
-    <!-- 上のバー（バージョン2.2になりました！） -->
+    <!-- 上のバー（バージョン2.4になりました！） -->
     <div style="background-color: rgba(240, 242, 245, 0.9); padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid #e0e0e0; color: #000000; backdrop-filter: blur(5px);">
-        🤖 AI/cogie0806 (バージョン2.2 - 社会の勉強対応版)
+        🤖 AI/cogie0806 (バージョン2.4 - 日本全国・県庁所在地マスター)
     </div>
 
     <!-- チャットの文字が出るエリア -->
@@ -72,9 +72,29 @@
             aisatsu = "こんばんは";
         }
 
-        // 【新機能】小学4年生の社会クイズに対応！
-        if (userText.includes("埼玉県") || userText.includes("さいたま県") || userText.includes("県庁所在地")) {
-            aiReply = "埼玉県の県庁所在地は 【 さいたま市 】 だよ！ひらがなで書くのがテストのコツだよ！社会の勉強えらい！";
+        // 【大注目！】日本全国47都道府県の県庁所在地データが入った魔法のリストだよ！
+        const kenchoData = {
+            "北海道": "札幌市", "青森": "青森市", "岩手": "盛岡市", "宮城": "仙台市", "秋田": "秋田市", "山形": "山形市", "福島": "福島市",
+            "茨城": "水戸市", "栃木": "宇都宮市", "群馬": "前橋市", "埼玉": "さいたま市", "千葉": "千葉市", "東京": "新宿区", "神奈川": "横浜市",
+            "新潟": "新潟市", "富山": "富山市", "石川": "金沢市", "福井": "福井市", "山梨": "甲府市", "長野": "長野市", "岐阜": "岐阜市",
+            "静岡": "静岡市", "愛知": "名古屋市", "三重": "津市", "滋賀": "大津市", "京都": "京都市", "大阪": "大阪市", "兵庫": "神戸市",
+            "奈良": "奈良市", "和歌山": "和歌山市", "鳥取": "鳥取市", "島根": "松江市", "岡山": "岡山市", "広島": "広島市", "山口": "山口市",
+            "徳島": "徳島市", "香川": "高松市", "愛媛": "松山市", "高知": "高知市", "福岡": "福岡市", "佐賀": "佐賀市", "長崎": "長崎市",
+            "熊本": "熊本市", "大分": "大分市", "宮崎": "宮崎市", "鹿児島": "鹿児島市", "沖縄": "那覇市"
+        };
+
+        // 入力された文字に都道府県の名前が入っているか自動でチェックするよ！
+        let foundPref = "";
+        for (let pref in kenchoData) {
+            if (userText.includes(pref)) {
+                foundPref = pref;
+                break;
+            }
+        }
+
+        // 全国どこを聞かれても答えを自動で作る仕組み
+        if (foundPref !== "") {
+            aiReply = `${foundPref}の県庁所在地は 【 ${kenchoData[foundPref]} 】 だよ！社会の勉強ばっちりだね！`;
         }
         // サイコロの仕組み
         else if (userText.includes("サイコロ") || userText.includes("さいころ")) {
@@ -83,7 +103,7 @@
         }
         // おみくじの仕組み
         else if (userText.includes("おみくじ") || userText.includes("オミクジ")) {
-            const kujilist = ["凶（きょう）😭", "吉（きち）🙂", "中吉（ちゅうきち）✨", "大吉（だいきち）🎉", "大大吉（だいだイクジ）👑🌟"];
+            const kujilist = ["凶（きょう）😭", "吉（きち）🙂", "中吉（ちゅうきち）✨", "大吉（だいきち）🎉", "大大吉（だいだいきち）👑🌟"];
             const randomKuji = kujilist[Math.floor(Math.random() * kujilist.length)];
             aiReply = `シャカシャカ…ポロン！ 今日の運勢は… 【 ${randomKuji} 】 です！`;
         }
