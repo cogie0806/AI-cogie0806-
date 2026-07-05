@@ -6,20 +6,25 @@
 </head>
 <body style="margin: 0; background-image: url('ai-haikei.jpg'); background-size: cover; background-position: center; font-family: sans-serif; color: #333333; display: flex; flex-direction: column; height: 100vh;">
 
-    <!-- 上のバー（記念すべきバージョン2.0！） -->
+    <!-- 上のバー（バージョン2.1になりました！） -->
     <div style="background-color: rgba(240, 242, 245, 0.9); padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid #e0e0e0; color: #000000; backdrop-filter: blur(5px);">
-        🤖 AI/cogie0806 (バージョン2.0 - 本物チャット風画面)
+        🤖 AI/cogie0806 (バージョン2.1 - アイコン画像対応版)
     </div>
 
-    <!-- チャットの文字が出るエリア（少し透明な白にして背景を透けさせています） -->
+    <!-- チャットの文字が出るエリア -->
     <div id="chat-box" style="flex: 1; padding: 20px; overflow-y: auto; font-size: 18px; line-height: 1.6; background-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(3px); display: flex; flex-direction: column; gap: 15px;">
-        <!-- AIのさいしょのあいさつ（左側に出るよ） -->
-        <div style="align-self: flex-start; max-width: 70%; background-color: #ffffff; padding: 12px 16px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff;">
-            <b>[AI/cogie0806]:</b> こんにちは！質問（しつもん）をどうぞ！
+        
+        <!-- 【新機能】AIの最初のあいさつに、きみの rootto.jpg アイコンを合体させたよ！ -->
+        <div style="display: flex; align-items: flex-start; gap: 10px; align-self: flex-start; max-width: 70%;">
+            <img src="rootto.jpg" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 0px 1px 3px rgba(0,0,0,0.2);">
+            <div style="background-color: #ffffff; padding: 12px 16px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff;">
+                <b>[AI/cogie0806]:</b> こんにちは！質問（しつもん）をどうぞ！
+            </div>
         </div>
+
     </div>
 
-    <!-- 下の文字を入力するところ（ChatGPTみたいに丸みを持たせた入力欄です） -->
+    <!-- 下の文字を入力するところ -->
     <div style="background-color: rgba(240, 242, 245, 0.9); padding: 20px; display: flex; gap: 10px; border-top: 1px solid #e0e0e0; backdrop-filter: blur(5px);">
         <input type="text" id="user-input" placeholder="ここにメッセージを入力してね..." style="flex: 1; padding: 14px 20px; font-size: 16px; border: 1px solid #ccc; border-radius: 25px; outline: none; background-color: #ffffff; color: #000000; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);">
         <button onclick="sendButton()" style="padding: 12px 28px; font-size: 16px; background-color: #0084ff; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">送信</button>
@@ -43,7 +48,7 @@
 
         const chatBox = document.getElementById("chat-box");
 
-        // 【新機能】自分の送った文字を「右側」の四角い吹き出しにして画面に出すよ！
+        // きみの送った文字（右側）
         chatBox.innerHTML += `
             <div style="align-self: flex-end; max-width: 70%; background-color: #e1f5fe; padding: 12px 16px; border-radius: 15px; border-top-right-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #000000;">
                 <b>[きみ]:</b> ${userText}
@@ -115,11 +120,14 @@
             }
         }
 
-        // 3. AIのお返事を少し遅れて「左側」の四角い吹き出しにして画面に出すよ！
+        // 【新機能】AIのお返事（左側）の横に、丸くした rootto.jpg を出すようにしたよ！
         setTimeout(() => {
             chatBox.innerHTML += `
-                <div style="align-self: flex-start; max-width: 70%; background-color: #ffffff; padding: 12px 16px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff;">
-                    <b>[AI/cogie0806]:</b> ${aiReply}
+                <div style="display: flex; align-items: flex-start; gap: 10px; align-self: flex-start; max-width: 70%;">
+                    <img src="rootto.jpg" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 0px 1px 3px rgba(0,0,0,0.2);">
+                    <div style="background-color: #ffffff; padding: 12px 16px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff;">
+                        <b>[AI/cogie0806]:</b> ${aiReply}
+                    </div>
                 </div>
             `;
             chatBox.scrollTop = chatBox.scrollHeight;
