@@ -4,26 +4,28 @@
     <meta charset="UTF-8">
     <title>AI/cogie0806</title>
 </head>
-<!-- 【ここを変えたよ！】背景をまっ白から、きみが用意してくれた画像ファイル（ai-haikei.jpg）に変更しました -->
 <body style="margin: 0; background-image: url('ai-haikei.jpg'); background-size: cover; background-position: center; font-family: sans-serif; color: #333333; display: flex; flex-direction: column; height: 100vh;">
 
-    <!-- 上のバー（バージョン1.9になりました！） -->
+    <!-- 上のバー（記念すべきバージョン2.0！） -->
     <div style="background-color: rgba(240, 242, 245, 0.9); padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid #e0e0e0; color: #000000; backdrop-filter: blur(5px);">
-        🤖 AI/cogie0806 (バージョン1.9 - 背景＆サウンド対応版)
+        🤖 AI/cogie0806 (バージョン2.0 - 本物チャット風画面)
     </div>
 
-    <!-- チャットの文字が出るエリア（透き通るように、少し透明な白色にしました） -->
-    <div id="chat-box" style="flex: 1; padding: 20px; overflow-y: auto; font-size: 18px; line-height: 1.6; background-color: rgba(255, 255, 255, 0.7); backdrop-filter: blur(3px);">
-        <div style="margin-bottom: 15px; color: #0084ff;"><b>[AI/cogie0806]:</b> こんにちは！質問（しつもん）をどうぞ！</div>
+    <!-- チャットの文字が出るエリア（少し透明な白にして背景を透けさせています） -->
+    <div id="chat-box" style="flex: 1; padding: 20px; overflow-y: auto; font-size: 18px; line-height: 1.6; background-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(3px); display: flex; flex-direction: column; gap: 15px;">
+        <!-- AIのさいしょのあいさつ（左側に出るよ） -->
+        <div style="align-self: flex-start; max-width: 70%; background-color: #ffffff; padding: 12px 16px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff;">
+            <b>[AI/cogie0806]:</b> こんにちは！質問（しつもん）をどうぞ！
+        </div>
     </div>
 
-    <!-- 下の文字を入力するところ -->
+    <!-- 下の文字を入力するところ（ChatGPTみたいに丸みを持たせた入力欄です） -->
     <div style="background-color: rgba(240, 242, 245, 0.9); padding: 20px; display: flex; gap: 10px; border-top: 1px solid #e0e0e0; backdrop-filter: blur(5px);">
-        <input type="text" id="user-input" placeholder="ここにメッセージを入力してね..." style="flex: 1; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; outline: none; background-color: #ffffff; color: #000000;">
-        <button onclick="sendButton()" style="padding: 12px 24px; font-size: 16px; background-color: #0084ff; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">送信</button>
+        <input type="text" id="user-input" placeholder="ここにメッセージを入力してね..." style="flex: 1; padding: 14px 20px; font-size: 16px; border: 1px solid #ccc; border-radius: 25px; outline: none; background-color: #ffffff; color: #000000; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);">
+        <button onclick="sendButton()" style="padding: 12px 28px; font-size: 16px; background-color: #0084ff; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">送信</button>
     </div>
 
-    <!-- 【新機能】きみが用意してくれた piko.mp3 を読み込むための目に見えない楽器だよ -->
+    <!-- 音楽ファイルを読み込む楽器 -->
     <audio id="piko-sound" src="piko.mp3" preload="auto"></audio>
 
     <!-- AIが考える仕組み -->
@@ -34,17 +36,20 @@
         
         if (userText === "") return;
 
-        // 【新機能】送信ボタンが押されたら、piko.mp3 をピコッと鳴らす魔法のコードだよ
+        // ピコッと音を鳴らす
         const sound = document.getElementById("piko-sound");
-        sound.currentTime = 0; // 音の最初に戻す
-        sound.play().catch(error => {
-            console.log("最初の1回は画面をどこかクリックしてから送信してね！");
-        });
+        sound.currentTime = 0;
+        sound.play().catch(error => {});
 
         const chatBox = document.getElementById("chat-box");
 
-        // 自分の送った文字を画面に出す
-        chatBox.innerHTML += `<div style="margin-bottom: 15px; color: #000000;"><b>[きみ]:</b> ${userText}</div>`;
+        // 【新機能】自分の送った文字を「右側」の四角い吹き出しにして画面に出すよ！
+        chatBox.innerHTML += `
+            <div style="align-self: flex-end; max-width: 70%; background-color: #e1f5fe; padding: 12px 16px; border-radius: 15px; border-top-right-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #000000;">
+                <b>[きみ]:</b> ${userText}
+            </div>
+        `;
+        
         inputElement.value = "";
         chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -110,9 +115,13 @@
             }
         }
 
-        // 3. AIのお返事を少し遅れて画面に出す
+        // 3. AIのお返事を少し遅れて「左側」の四角い吹き出しにして画面に出すよ！
         setTimeout(() => {
-            chatBox.innerHTML += `<div style="margin-bottom: 15px; color: #0084ff;"><b>[AI/cogie0806]:</b> ${aiReply}</div>`;
+            chatBox.innerHTML += `
+                <div style="align-self: flex-start; max-width: 70%; background-color: #ffffff; padding: 12px 16px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff;">
+                    <b>[AI/cogie0806]:</b> ${aiReply}
+                </div>
+            `;
             chatBox.scrollTop = chatBox.scrollHeight;
         }, 500);
     }
