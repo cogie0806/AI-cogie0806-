@@ -6,9 +6,9 @@
 </head>
 <body style="margin: 0; background-color: #ffffff; font-family: sans-serif; color: #333333; display: flex; flex-direction: column; height: 100vh;">
 
-    <!-- 上のバー（【ここを変えたよ！】バージョン1.6にしました） -->
+    <!-- 上のバー（バージョン1.7になりました！） -->
     <div style="background-color: #f0f2f5; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid #e0e0e0; color: #000000;">
-        🤖 AI/cogie0806 (バージョン1.6)
+        🤖 AI/cogie0806 (バージョン1.7 - 電卓機能付き)
     </div>
 
     <!-- チャットの文字が出るエリア -->
@@ -51,24 +51,46 @@
             aisatsu = "こんばんは";
         }
 
-        if (userText.includes("こんにちは") || userText.includes("ハロー") || userText.includes("こんばんわ") || userText.includes("こんばんは") || userText.includes("おはよう") || userText.includes("やぁ") || userText.includes("ヤァ") || userText.includes("おーい")) {
-            aiReply = `${aisatsu}。現在時刻は${hours}:${minutes}です。`;
-        } else if (userText.includes("ばか") || userText.includes("あほ") || userText.includes("バカ")) {
-            aiReply = "ばかって言われると悲しいな…つぎは優しくしてね！";
-        } else if (userText.includes("カレー")) {
-            aiReply = "カレーの作り方だね！①お肉、タマネギ、人参、ジャガイモを切って鍋で炒める。②お水を入れて柔らかくなるまで煮込む。③火を止めてカレールーを溶かす。④弱火で少し煮込んだら完成だよ！お腹空いてきちゃった！";
-        } else if (userText.includes("mod") || userText.includes("MOD") || userText.includes("モッド")) {
-            aiReply = "マイクラのmodを入れるなら、パソコンのJava版（ジャバばん）で『Forge（フォージ）』や『Fabric（ファブリック）』というソフトをまずは入れる必要があるよ！壊れやすいからお家の人と一緒にやってね！";
-        } else if (userText.includes("マイクラ") || userText.includes("マインクラフト")) {
-            aiReply = "マイクラは楽しいよね！建築（けんちく）をするのが好き？それともサバイバル？";
-        } else if (userText.includes("ゲーム")) {
-            aiReply = "ゲームといえば、マインクラフトやロブロックスが楽しいよね！";
-        } else if (userText.includes("天才") || userText.includes("すごい")) {
-            aiReply = "ありがとう！でもこの画面を作ったきみの方が天才だよ！";
-        } else if (userText.includes("名前")) {
-            aiReply = "ぼくの名前は『AI/cogie0806』だよ。きみが作ってくれたんだ！";
-        } else if (userText.includes("何歳") || userText.includes("年齢")) {
-            aiReply = "ぼくは生まれたばかりだけど、きみと同じ9歳（小学4年生）の気持ちだよ！";
+        // 【新機能】算数の計算を自動でする仕組み
+        // 「=?」や「＝」が含まれていたら計算を試みるよ
+        if (userText.includes("=") || userText.includes("＝") || userText.match(/[0-9]/)) {
+            try {
+                // 計算しやすいように文字をキレイにするよ（「+」や「-」や「*」や「/」だけにする）
+                let kisanText = userText.replace("=", "").replace("＝", "").replace("?", "").replace("？", "");
+                kisanText = kisanText.replace("×", "*").replace("÷", "/"); // パソコンの掛け算と割り算の記号に直す
+                
+                // 魔法のコード eval で計算をするよ
+                if (kisanText.match(/^[0-9+\-*/().\s]+$/)) {
+                    let ans = eval(kisanText);
+                    aiReply = `計算したよ！答えは 【 ${ans} 】 です！算数ならまかせて！`;
+                }
+            } catch(e) {
+                // 計算がバグっちゃったときの予備の返事
+                aiReply = "算数の計算かな？数字と「+」「-」「×」「÷」を正しく入れてみてね！";
+            }
+        }
+
+        // いつものおしゃべりの仕組み（計算じゃないときはこっちが動くよ）
+        if (aiReply.includes("難しい質問だね")) {
+            if (userText.includes("こんにちは") || userText.includes("ハロー") || userText.includes("こんばんわ") || userText.includes("こんばんは") || userText.includes("おはよう") || userText.includes("やぁ") || userText.includes("ヤァ") || userText.includes("おーい")) {
+                aiReply = `${aisatsu}。現在時刻は${hours}:${minutes}です。`;
+            } else if (userText.includes("ばか") || userText.includes("あほ") || userText.includes("バカ")) {
+                aiReply = "ばかって言われると悲しいな…つぎは優しくしてね！";
+            } else if (userText.includes("カレー")) {
+                aiReply = "カレーの作り方だね！①お肉、タマネギ、人参、ジャガイモを切って鍋で炒める。②お水を入れて柔らかくなるまで煮込む。③火を止めてカレールーを溶かす。④弱火で少し煮込んだら完成だよ！お腹空いてきちゃった！";
+            } else if (userText.includes("mod") || userText.includes("MOD") || userText.includes("モッド")) {
+                aiReply = "マイクラのmodを入れるなら、パソコンのJava版（ジャバばん）で『Forge（フォージ）』や『Fabric（ファブリック）』というソフトをまずは入れる必要があるよ！壊れやすいからお家の人と一緒にやってね！";
+            } else if (userText.includes("マイクラ") || userText.includes("マインクラフト")) {
+                aiReply = "マイクラは楽しいよね！建築（けんちく）をするのが好き？それともサバイバル？";
+            } else if (userText.includes("ゲーム")) {
+                aiReply = "ゲームといえば、マインクラフトやロブロックスが楽しいよね！";
+            } else if (userText.includes("天才") || userText.includes("すごい")) {
+                aiReply = "ありがとう！でもこの画面を作ったきみの方が天才だよ！";
+            } else if (userText.includes("名前")) {
+                aiReply = "ぼくの名前は『AI/cogie0806』だよ。きみが作ってくれたんだ！";
+            } else if (userText.includes("何歳") || userText.includes("年齢")) {
+                aiReply = "ぼくは生まれたばかりだけど、きみと同じ9歳（小学4年生）の気持ちだよ！";
+            }
         }
 
         // 3. AIのお返事を少し遅れて画面に出す
