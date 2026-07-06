@@ -2,13 +2,15 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <!-- 【ここを変えたよ！】タブのマークを cogie0806.jpg に変更しました -->
+    <link rel="icon" href="cogie0806.jpg" type="image/jpeg">
     <title>AI/cogie0806</title>
 </head>
 <body style="margin: 0; background-image: url('ai-haikei.jpg'); background-size: cover; background-position: center; font-family: sans-serif; color: #333333; display: flex; flex-direction: column; height: 100vh;">
 
-    <!-- 上のバー -->
+    <!-- 上のバー（バージョン2.9になりました！） -->
     <div style="background-color: rgba(240, 242, 245, 0.9); padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid #e0e0e0; color: #000000; backdrop-filter: blur(5px);">
-        🤖 AI/cogie0806 (バージョン2.8 - バグ修正安心版)
+        🤖 AI/cogie0806 (バージョン2.9 - タブアイコン対応版)
     </div>
 
     <!-- チャットの文字が出るエリア -->
@@ -17,7 +19,7 @@
         <div style="display: flex; align-items: flex-start; gap: 10px; align-self: flex-start; max-width: 70%;">
             <img src="rootto.jpg" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 0px 1px 3px rgba(0,0,0,0.2);">
             <div style="background-color: #ffffff; padding: 12px 16px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff;">
-                <b>[AI/cogie0806]:</b> 修理（しゅうり）が完了（かんりょう）したよ！何でもお話してね！
+                <b>[AI/cogie0806]:</b> こんにちは！質問（しつもん）をどうぞ！タブのマークが変わったか見てみてね！
             </div>
         </div>
     </div>
@@ -151,7 +153,7 @@
                     }
 
                     if (foundPref !== "") {
-                        aiReply = `${foundPref}の県庁所在地は 【 ${kenchoData[foundPref]} 】 だよ！社会の勉強ばっちりだね！`;
+                        aiReply = `${foundPref}の県庁所在地は 【 ${kenchoData[foundPref]} 】 だよ！社会 the 勉強ばっちりだね！`;
                     }
                     // サイコロの仕組み
                     else if (userText.includes("サイコロ") || userText.includes("さいころ")) {
