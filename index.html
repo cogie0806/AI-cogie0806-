@@ -2,32 +2,34 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <!-- 【ここを変えたよ！】タブのマークを cogie0806.jpg に変更しました -->
+    <!-- スマホの画面サイズに自動でぴったり合わせる魔法のコード -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- タブのマークを cogie0806.jpg にするコード -->
     <link rel="icon" href="cogie0806.jpg" type="image/jpeg">
     <title>AI/cogie0806</title>
 </head>
-<body style="margin: 0; background-image: url('ai-haikei.jpg'); background-size: cover; background-position: center; font-family: sans-serif; color: #333333; display: flex; flex-direction: column; height: 100vh;">
+<body style="margin: 0; background-image: url('ai-haikei.jpg'); background-size: cover; background-position: center; font-family: sans-serif; color: #333333; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden;">
 
-    <!-- 上のバー（バージョン2.9になりました！） -->
-    <div style="background-color: rgba(240, 242, 245, 0.9); padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid #e0e0e0; color: #000000; backdrop-filter: blur(5px);">
-        🤖 AI/cogie0806 (バージョン2.9 - タブアイコン対応版)
+    <!-- 上のバー（スマホ用に少しスリムにしました） -->
+    <div style="background-color: rgba(240, 242, 245, 0.9); padding: 10px; text-align: center; font-size: 16px; font-weight: bold; border-bottom: 1px solid #e0e0e0; color: #000000; backdrop-filter: blur(5px);">
+        🤖 AI/cogie0806 (バージョン2.9 - スマホ最適化版)
     </div>
 
-    <!-- チャットの文字が出るエリア -->
-    <div id="chat-box" style="flex: 1; padding: 20px; overflow-y: auto; font-size: 18px; line-height: 1.6; background-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(3px); display: flex; flex-direction: column; gap: 15px;">
+    <!-- チャットの文字が出るエリア（スマホで見やすく調整しました） -->
+    <div id="chat-box" style="flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.5; background-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(3px); display: flex; flex-direction: column; gap: 12px; box-sizing: border-box; width: 100%;">
         <!-- AIの最初のあいさつ -->
-        <div style="display: flex; align-items: flex-start; gap: 10px; align-self: flex-start; max-width: 70%;">
-            <img src="rootto.jpg" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 0px 1px 3px rgba(0,0,0,0.2);">
-            <div style="background-color: #ffffff; padding: 12px 16px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff;">
-                <b>[AI/cogie0806]:</b> こんにちは！質問（しつもん）をどうぞ！タブのマークが変わったか見てみてね！
+        <div style="display: flex; align-items: flex-start; gap: 8px; align-self: flex-start; max-width: 85%;">
+            <img src="rootto.jpg" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; box-shadow: 0px 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+            <div style="background-color: #ffffff; padding: 10px 14px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff; box-sizing: border-box;">
+                <b>[AI/cogie0806]:</b> こんにちは！スマホでも見（み）やすくなったよ！質問（しつもん）をどうぞ！
             </div>
         </div>
     </div>
 
-    <!-- 下の文字を入力するところ -->
-    <div style="background-color: rgba(240, 242, 245, 0.9); padding: 20px; display: flex; gap: 10px; border-top: 1px solid #e0e0e0; backdrop-filter: blur(5px);">
-        <input type="text" id="user-input" placeholder="ここにメッセージを入力してね..." style="flex: 1; padding: 14px 20px; font-size: 16px; border: 1px solid #ccc; border-radius: 25px; outline: none; background-color: #ffffff; color: #000000; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);">
-        <button onclick="sendButton()" style="padding: 12px 24px; font-size: 16px; background-color: #0084ff; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">送信</button>
+    <!-- 下の文字を入力するところ（スマホのキーボードが出ても押しやすいように調整しました） -->
+    <div style="background-color: rgba(240, 242, 245, 0.9); padding: 10px; display: flex; gap: 8px; border-top: 1px solid #e0e0e0; backdrop-filter: blur(5px); box-sizing: border-box; width: 100%;">
+        <input type="text" id="user-input" placeholder="メッセージを入力..." style="flex: 1; padding: 10px 15px; font-size: 14px; border: 1px solid #ccc; border-radius: 25px; outline: none; background-color: #ffffff; color: #000000; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); min-width: 0;">
+        <button onclick="sendButton()" style="padding: 10px 20px; font-size: 14px; background-color: #0084ff; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); white-space: nowrap; flex-shrink: 0;">送信</button>
     </div>
 
     <!-- 音楽ファイルを読み込む楽器 -->
@@ -47,9 +49,9 @@
 
         const chatBox = document.getElementById("chat-box");
 
-        // きみの送った文字（右側）
+        // きみの送った文字（右側・スマホで見やすい幅に調整したよ）
         chatBox.innerHTML += `
-            <div style="align-self: flex-end; max-width: 70%; background-color: #e1f5fe; padding: 12px 16px; border-radius: 15px; border-top-right-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #000000;">
+            <div style="align-self: flex-end; max-width: 85%; background-color: #e1f5fe; padding: 10px 14px; border-radius: 15px; border-top-right-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #000000; box-sizing: border-box;">
                 <b>[きみ]:</b> ${userText}
             </div>
         `;
@@ -110,7 +112,7 @@
                     "紋": "【訓読み】（常用なし） 【音読み】モン", "治": "【訓読み】おさ（める）、なお（る） 【音読み】ジ、チ", "弥": "【訓読み】いや、いよ 【音読み】ミ、ビ", "厄": "【訓読み】（常用なし） 【音読み】ヤク", "躍": "【訓読み】おど（る） 【音読み】ヤク", "闇": "【訓読み】やみ 【音読み】アン", "喩": "【訓読み】たと（える） 【音読み】ユ", "愉": "【訓読み】たの（しい） 【音読み】ユ", "諭": "【訓読み】さと（す） 【音読み】ユ", "癒": "【訓読み】い（やす） 【音読み】ユ",
                     "唯": "【訓読み】（常用なし） 【音読み】ユイ、イ", "幽": "【訓読み】（常用なし） 【音読み】ユウ", "悠": "【訓読み】（常用なし） 【音読み】ユウ", "湧": "【訓読み】わ（く） 【音読み】ユウ", "猶": "【訓読み】なお 【音読み】ユウ、ユ", "裕": "【訓読み】（常用なし） 【音読み】ユウ", "雄": "【訓読み】お、おす 【音読み】ユウ", "誘": "【訓読み】さそ（う） 【音読み】ユウ", "憂": "【訓読み】うれ（える）、う（い） 【音読み】ユウ", "融": "【訓読み】と（ける） 【音読み】ユウ",
                     "与": "【訓読み】あた（える） 【音読み】ヨ", "誉": "【訓読み】ほま（れ） 【音読み】ヨ", "妖": "【訓読み】あや（しい） 【音読み】ヨ", "庸": "【訓読み】（常用なし） 【音読み】ヨウ", "揚": "【訓読み】あ（げる） 【音読み】ヨウ", "揺": "【訓読み】ゆ（れる） 【音読み】ヨウ", "溶": "【訓読み】と（ける） 【音読み】ヨウ", "腰": "【訓読み】こし 【音読み】ヨウ", "瘍": "【訓読み】（常用なし） 【音読み】ヨウ", "踊": "【訓読み】おど（る） 【音読み】ヨウ",
-                    "窯": "【訓読み】かま 【音読み】ヨウ", "擁": "【訓読み】（常用なし） 【音読み】ヨウ", "謡": "【訓読み】うた（う） 【音読み】ヨウ", "抑": "【訓読み】おさ（える） 【音読み】ヨク", "沃": "【訓読み】（常用なし） 【音読み】ヨク", "翼": "【訓読み】つばさ 【音読み】ヨク", "拉": "【訓読み】（常用なし） 【音読み】ラ", "裸": "【訓読み】はだか 【音読み】ラ", "羅": "【訓読み】（常用なし） 【音読み】ラ", "雷": "【訓読み】かみなり 【音読み】ライ",
+                    "窯": "【訓読み】かま 【音読み】ヨウ", "擁": "【訓読み】（常用なし） 【音読み】ヨウ", "謡": "【訓読み】うta（う） 【音読み】ヨウ", "抑": "【訓読み】おさ（える） 【音読み】ヨク", "沃": "【訓読み】（常用なし） 【音読み】ヨク", "翼": "【訓読み】つばさ 【音読み】ヨク", "拉": "【訓読み】（常用なし） 【音読み】ラ", "裸": "【訓読み】はだか 【音読み】ラ", "羅": "【訓読み】（常用なし） 【音読み】ラ", "雷": "【訓読み】かみなり 【音読み】ライ",
                     "頼": "【訓読み】たの（む）、たよ（る） 【音読み】ライ", "絡": "【訓読み】から（む） 【音読み】ラク", "酪": "【訓読み】（常用なし） 【音読み】ラク", "辣": "【訓読み】（常用なし） 【音読み】ラツ", "濫": "【訓読み】（常用なし） 【音読み】ラン", "藍": "【訓読み】あい 【音読み】ラン", "欄": "【訓読み】（常用なし） 【音読み】ラン", "吏": "【訓読み】（常用なし） 【音読み】リ", "痢": "【訓読み】（常用なし） 【音読み】リ", "履": "【訓読み】は（く） 【音読み】リ",
                     "璃": "【訓読み】（常用なし） 【音読み】リ", "離": "【訓読み】はな（れる） 【音読み】リ", "慄": "【訓読み】おのの（く） 【音読み】リツ", "柳": "【訓読み】やなぎ 【音読み】リュウ", "竜": "【訓読み】たつ 【音読み】リュウ", "粒": "【訓読み】つぶ 【音読み】リュウ", "隆": "【訓読み】（常用なし） 【音読み】リュウ", "硫": "【訓読み】（常用なし） 【音読み】リュウ", "侶": "【訓読み】とも 【音読み】リョ", "虜": "【訓読み】（常用なし） 【音読み】リョ",
                     "慮": "【訓読み】（常用なし） 【音読み】リョ", "了": "【訓読み】（常用なし） 【音読み】リョウ", "涼": "【訓読み】すず（しい） 【音読み】リョウ", "猟": "【訓読み】（常用なし） 【音読み】リョウ", "陵": "【訓読み】みささぎ 【音読み】リョウ", "僚": "【訓読み】（常用なし） 【音読み】リョウ", "寮": "【訓読み】（常用なし） 【音読み】リョウ", "療": "【訓読み】（常用なし） 【音読み】リョウ", "瞭": "【訓読み】あき（らか） 【音読み】リョウ", "糧": "【訓読み】かて 【音読み】リョウ、ロウ",
@@ -153,7 +155,7 @@
                     }
 
                     if (foundPref !== "") {
-                        aiReply = `${foundPref}の県庁所在地は 【 ${kenchoData[foundPref]} 】 だよ！社会 the 勉強ばっちりだね！`;
+                        aiReply = `${foundPref}の県庁所在地は 【 ${kenchoData[foundPref]} 】 だよ！社会の勉強ばっちりだね！`;
                     }
                     // サイコロの仕組み
                     else if (userText.includes("サイコロ") || userText.includes("さいころ")) {
@@ -206,12 +208,12 @@
             }
         }
 
-        // AIのお返事（左側）
+        // AIのお返事（左側・スマホで見やすい幅に調整したよ）
         setTimeout(() => {
             chatBox.innerHTML += `
-                <div style="display: flex; align-items: flex-start; gap: 10px; align-self: flex-start; max-width: 70%;">
-                    <img src="rootto.jpg" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 0px 1px 3px rgba(0,0,0,0.2);">
-                    <div style="background-color: #ffffff; padding: 12px 16px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff;">
+                <div style="display: flex; align-items: flex-start; gap: 8px; align-self: flex-start; max-width: 85%;">
+                    <img src="rootto.jpg" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; box-shadow: 0px 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                    <div style="background-color: #ffffff; padding: 10px 14px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff; box-sizing: border-box;">
                         <b>[AI/cogie0806]:</b> ${aiReply}
                     </div>
                 </div>
