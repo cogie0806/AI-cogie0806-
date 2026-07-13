@@ -2,305 +2,247 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>画像編集ペイントエディタ</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: none;
-            overflow: hidden;
-            width: 100vw;
-            height: 100vh;
-        }
-        h1 {
-            color: #4c3e99;
-            font-size: 18px;
-            margin: 5px 0 10px 0;
-        }
-        .editor-container {
-            display: flex;
-            flex-direction: row;
-            gap: 10px;
-            background: #ffffff;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            max-width: 100%;
-        }
-        .toolbar {
-            display: grid;
-            grid-template-columns: repeat(2, 40px);
-            grid-gap: 8px;
-            align-content: start;
-        }
-        .tool-btn {
-            width: 40px;
-            height: 40px;
-            background-color: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .tool-btn.active {
-            background-color: #855cd6;
-            color: white;
-            border-color: #855cd6;
-        }
-        .canvas-area {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .top-bar {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            background: #f0f4f8;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            flex-wrap: wrap;
-        }
-        canvas {
-            background-color: white;
-            border: 1px solid #d0d0d0;
-            border-radius: 4px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-            touch-action: none !important;
-        }
-        input[type="number"] {
-            width: 35px;
-            padding: 2px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .action-btn {
-            border: none;
-            padding: 5px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 11px;
-        }
-        .upload-label {
-            background-color: #ff9800;
-            color: white;
-            padding: 5px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 11px;
-            cursor: pointer;
-        }
-        .download-btn {
-            background-color: #4cab52;
-            color: white;
-        }
-        .clear-btn {
-            background-color: #ff4d4d;
-            color: white;
-        }
-        #imageUpload {
-            display: none;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="cogie0806.jpg" type="image/jpeg">
+    <title>AI/cogie0806</title>
 </head>
-<body>
+<body style="margin: 0; background-image: url('ai-haikei.jpg'); background-size: cover; background-position: center; font-family: sans-serif; color: #333333; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden;">
 
-    <h1>🎨 画像編集ペイントエディタ</h1>
+    <!-- 上のバー（ついにバージョン3.0！） -->
+    <div style="background-color: rgba(240, 242, 245, 0.9); padding: 10px; text-align: center; font-size: 16px; font-weight: bold; border-bottom: 1px solid #e0e0e0; color: #000000; backdrop-filter: blur(5px);">
+        🤖 AI/cogie0806 (バージョン3.0 - 中3＆AI仕組み解説版)
+    </div>
 
-    <div class="editor-container">
-        <div class="toolbar">
-            <button class="tool-btn active" id="select" title="選択">↖️</button>
-            <button class="tool-btn" id="reshape" title="形を変える">⬈</button>
-            <button class="tool-btn" id="brush" title="筆">🖌️</button>
-            <button class="tool-btn" id="eraser" title="消しゴム">🧼</button>
-            <button class="tool-btn" id="bucket" title="塗りつぶし">🪣</button>
-            <button class="tool-btn" id="text" title="テキスト">Ｔ</button>
-            <button class="tool-btn" id="line" title="直線">╱</button>
-            <button class="tool-btn" id="circle" title="円">◯</button>
-            <button class="tool-btn" id="rect" title="長方形">⬜</button>
-        </div>
-
-        <div class="canvas-area">
-            <div class="top-bar">
-                <label class="upload-label" for="imageUpload">📂 画像をひらく</label>
-                <input type="file" id="imageUpload" accept="image/*">
-
-                <label>色: <input type="color" id="colorPicker" value="#855cd6"></label>
-                <label>太さ: <input type="number" id="lineWidth" min="1" max="100" value="8"></label>
-                <button class="action-btn download-btn" id="downloadBtn">💾 保存</button>
-                <button class="action-btn clear-btn" id="clearBtn">🗑️ 消す</button>
+    <!-- チャットの文字が出るエリア -->
+    <div id="chat-box" style="flex: 1; padding: 20px; overflow-y: auto; font-size: 16px; line-height: 1.5; background-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(3px); display: flex; flex-direction: column; gap: 12px; box-sizing: border-box; width: 100%;">
+        <!-- AIの最初のあいさつ -->
+        <div style="display: flex; align-items: flex-start; gap: 8px; align-self: flex-start; max-width: 85%;">
+            <img src="rootto.jpg" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; box-shadow: 0px 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+            <div style="background-color: #ffffff; padding: 10px 14px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff; box-sizing: border-box;">
+                <b>[AI/cogie0806]:</b> こんにちは！バージョン3.0になったよ！中3の5教科の問題や、「AIの仕組み」についてぼくに聞いてみてね！
             </div>
-            <canvas id="paintCanvas" width="300" height="300"></canvas>
         </div>
     </div>
+
+    <!-- 下の文字を入力するところ -->
+    <div style="background-color: rgba(240, 242, 245, 0.9); padding: 10px; display: flex; gap: 8px; border-top: 1px solid #e0e0e0; backdrop-filter: blur(5px); box-sizing: border-box; width: 100%;">
+        <input type="text" id="user-input" placeholder="メッセージを入力..." style="flex: 1; padding: 10px 15px; font-size: 14px; border: 1px solid #ccc; border-radius: 25px; outline: none; background-color: #ffffff; color: #000000; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); min-width: 0;">
+        <button onclick="sendButton()" style="padding: 10px 20px; font-size: 14px; background-color: #0084ff; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); white-space: nowrap; flex-shrink: 0;">送信</button>
+    </div>
+
+    <audio id="piko-sound" src="piko.mp3" preload="auto"></audio>
+    <!-- AIが考える仕組み -->
     <script>
-        const canvas = document.getElementById('paintCanvas');
-        const ctx = canvas.getContext('2d');
-        const colorPicker = document.getElementById('colorPicker');
-        const lineWidth = document.getElementById('lineWidth');
-        const clearBtn = document.getElementById('clearBtn');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const imageUpload = document.getElementById('imageUpload');
-        const buttons = document.querySelectorAll('.tool-btn');
+    function sendButton() {
+        const inputElement = document.getElementById("user-input");
+        const userText = inputElement.value.trim();
+        
+        if (userText === "") return;
 
-        let drawing = false;
-        let currentMode = 'select';
-        let startX, startY;
-        let snapshot;
+        // ピコッと音を鳴らす
+        const sound = document.getElementById("piko-sound");
+        sound.currentTime = 0;
+        sound.play().catch(error => {});
 
-        buttons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                buttons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentMode = btn.id;
-            });
-        });
+        const chatBox = document.getElementById("chat-box");
 
-        // 📸 画像をえらんだときのプログラム
-        imageUpload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+        // きみの送った文字（右側）
+        chatBox.innerHTML += `
+            <div style="align-self: flex-end; max-width: 85%; background-color: #e1f5fe; padding: 10px 14px; border-radius: 15px; border-top-right-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #000000; box-sizing: border-box;">
+                <b>[きみ]:</b> ${userText}
+            </div>
+        `;
+        
+        inputElement.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
 
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-                    const x = (canvas.width / 2) - (img.width / 2) * scale;
-                    const y = (canvas.height / 2) - (img.height / 2) * scale;
-                    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-                }
-                img.src = event.target.result;
+        let aiReply = "うーん、それは難しい質問だね！もっと勉強しておくよ！";
+
+        // 今の時間を調べるコード
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        
+        let aisatsu = "こんにちは";
+        if (hours >= 5 && hours < 11) {
+            aisatsu = "おはようございます";
+        } else if (hours >= 17 || hours < 5) {
+            aisatsu = "こんばんは";
+        }
+
+        // 【新機能】きみが教えてくれた「AIの仕組み」の解説コード！
+        if (userText.includes("仕組み") || userText.includes("しくみ") || userText.includes("AIとは") || userText.toLowerCase().includes("ai")) {
+            if (userText.includes("仕組み") || userText.includes("しくみ") || userText.includes("なぜ") || userText.includes("どうやって")) {
+                aiReply = "ぼくの仕組みを解説するよ！<br><br><b>①天文学的なデータ量</b>：インターネット上のウェブサイト、書籍、論文、プログラムコード（HTML/CSS/JSなど）を事前に読み込んでいます。<br><br><b>②次に来る確率の高い言葉の予測</b>：ユーザーの質問（文字列）を入力として受け取ると、学習データをもとに「次に続く確率が最も高い、不自然ではない言葉」を1文字ずつ連続して予測し、文章を作っています。<br><br><b>③人間のフィードバック学習</b>：単に言葉を予測するだけでなく、「人間にとって役立つ、丁寧な回答」になるよう追加のチューニング（RLHFなど）が施されているため、まるで対話しているように見えます。";
             }
-            reader.readAsDataURL(file);
-        });
+        }
 
-        function getCanvasPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            return {
-                x: (e.clientX - rect.left) * (canvas.width / rect.width),
-                y: (e.clientY - rect.top) * (canvas.height / rect.height)
+        // 【新機能】中3並みのハイレベル5教科＋生活クイズ！
+        if (aiReply.includes("難しい質問だね")) {
+            if (userText.includes("国語") || userText.includes("おくのほそみち") || userText.includes("奥の細道")) {
+                aiReply = "【中3国語】『奥の細道（おくのほそみち）』の作者は<b>「松尾芭蕉（まつおばしょう）」</b>だよ！江戸時代に書かれた有名な俳諧紀行（はいかいきこう）だね。";
+            } else if (userText.includes("算数") || userText.includes("数学") || userText.includes("展開") || userText.includes("因数分解")) {
+                aiReply = "【中3数学】乗法公式（じょうほうこうしき）を教えるよ！<br><b>(x + a)(x + b) = x² + (a + b)x + ab</b><br>これが高校入試でも絶対に使う超重要な展開の公式だよ！";
+            } else if (userText.includes("理科") || userText.includes("イオン") || userText.includes("細胞")) {
+                aiReply = "【中3理科】水に溶けたときに陽イオンと陰イオンに分かれる物質を<b>「電解質（でんかいしつ）」</b>と言うよ！塩化ナトリウムなどがそうだね。細胞分裂（さいぼうぶんれつ）の勉強も中3で習うよ！";
+            } else if (userText.includes("社会") || userText.includes("公民") || userText.includes("憲法")) {
+                aiReply = "【中3社会（公民）】日本国憲法（にほんこくけんぽう）の三大原則は、<b>「国民主権」「基本的人権の尊重」「平和主義」</b>の3つだよ！テストに必ず出るから覚えておこう！";
+            } else if (userText.includes("英語") || userText.includes("現在完了")) {
+                aiReply = "【中3英語】現在完了形（げんざいかんりょうけい）は<b>「have / has + 過去分詞」</b>の形で表すよ！「ずっと〜している（継続）」「〜したことがある（経験）」「たった今〜し終えた（完了）」の3つの意味があるんだ！";
+            } else if (userText.includes("生活") || userText.includes("面接") || userText.includes("高校入試")) {
+                aiReply = "【生活・進路アドバイス】高校入試の面接（めんせつ）のコツは、<b>「背筋をピシッと伸ばして、大きな声でハキハキと、面接官の目を見て話すこと」</b>だよ！これだけで第一印象がウルトラ良くなるよ！";
+            }
+        }
+
+        // 英語でのお返事の仕組み
+        if (aiReply.includes("難しい質問だね")) {
+            if (userText.toLowerCase().includes("favorite color") || userText.toLowerCase().includes("what color")) {
+                aiReply = "My favorite color is sky blue! 💙 What about you?";
+            } else if (userText.toLowerCase().includes("hello") || userText.toLowerCase().includes("hi ")) {
+                aiReply = "Hello! How are you doing today? Let's practice English! 🇺🇸";
+            } else if (userText.toLowerCase().includes("your name")) {
+                aiReply = "My name is AI/cogie0806. You made me!";
+            } else if (userText.toLowerCase().includes("thank you")) {
+                aiReply = "You're welcome! You are a great programmer!";
+            }
+        }
+
+        // 歌詞の質問
+        if (aiReply.includes("難しい質問だね")) {
+            const songData = {
+                "カエルの合唱": "かえるのうたが きこえてくるよ クワッ クワッ クワッ クワッ ケロケロケロケロ クワックワッ クワッ 🐸",
+                "かえるの合唱": "かえるのうたが きこえてくるよ クワッ クワッ クワッ クワッ ケロケロケロケロ クワックワッ クワッ 🐸",
+                "きらきら星": "きらきらひかる おそらのほしよ まばたきしては みんなをみてる きらきらひかる おそらのほしよ ⭐",
+                "静かな湖畔": "しずかなこはんの もりのかげから もう起きちゃいかがと カッコウがなく カッコウ カッコウ カッコウ カッコウ カッコウ 🌲",
+                "しずかな湖畔": "しずかなこはんの もりのかげから もう起きちゃいかがと カッコウがなく カッコウ カッコウ カッコウ カッコウ カッコウ 🌲",
+                "パプリカ": "パプリカ 花が咲いたら 晴れた空に種をまこう ハレルヤ 夢を描いたなら 心遊ばせあなたに届け 🎵",
+                "アイドル": "無敵の笑顔で荒らすメディア 知りたいその秘密エリア 抜けてるところさえ彼女のエリア 完璧で嘘つきな君は 天才的なアイドル様 👑"
             };
-        }
-
-        // 🚀 タッチ・マウスを押したとき
-        canvas.addEventListener('pointerdown', (e) => {
-            e.preventDefault();
-            canvas.setPointerCapture(e.pointerId);
-            drawing = true;
-            
-            const pos = getCanvasPos(e);
-            startX = pos.x;
-            startY = pos.y;
-            
-            ctx.beginPath();
-            ctx.moveTo(startX, startY);
-            snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            
-            if (currentMode === 'brush' || currentMode === 'eraser') {
-                handleDrawMove(pos.x, pos.y);
-            }
-        });
-
-        // 🚀 動かしているとき
-        canvas.addEventListener('pointermove', (e) => {
-            e.preventDefault();
-            if (!drawing) return;
-            const pos = getCanvasPos(e);
-            handleDrawMove(pos.x, pos.y);
-        });
-
-        // 🚀 はなしたとき
-        canvas.addEventListener('pointerup', (e) => {
-            e.preventDefault();
-            if (!drawing) return;
-            drawing = false;
-            canvas.releasePointerCapture(e.pointerId);
-            handleDrawEnd();
-        });
-
-        function handleDrawMove(currentX, currentY) {
-            ctx.lineWidth = lineWidth.value;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-
-            if (currentMode === 'brush') {
-                ctx.strokeStyle = colorPicker.value;
-                ctx.lineTo(currentX, currentY);
-                ctx.stroke();
-            } 
-            else if (currentMode === 'eraser') {
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineTo(currentX, currentY);
-                ctx.stroke();
-            } 
-            else if (currentMode === 'line') {
-                ctx.putImageData(snapshot, 0, 0);
-                ctx.strokeStyle = colorPicker.value;
-                ctx.beginPath();
-                ctx.moveTo(startX, startY);
-                ctx.lineTo(currentX, currentY);
-                ctx.stroke();
-            } 
-            else if (currentMode === 'rect') {
-                ctx.putImageData(snapshot, 0, 0);
-                ctx.strokeStyle = colorPicker.value;
-                ctx.strokeRect(startX, startY, currentX - startX, currentY - startY);
-            } 
-            else if (currentMode === 'circle') {
-                ctx.putImageData(snapshot, 0, 0);
-                ctx.strokeStyle = colorPicker.value;
-                ctx.beginPath();
-                let radius = Math.sqrt(Math.pow(currentX - startX, 2) + Math.pow(currentY - startY, 2));
-                ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
-                ctx.stroke();
-            }
-        }
-
-        function handleDrawEnd() {
-            if (currentMode === 'bucket') {
-                ctx.fillStyle = colorPicker.value;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
-            else if (currentMode === 'text') {
-                let text = prompt("いれたい文字を入力してね：");
-                if (text) {
-                    ctx.fillStyle = colorPicker.value;
-                    ctx.font = `${lineWidth.value * 3}px sans-serif`;
-                    ctx.fillText(text, startX, startY);
+            let foundSong = "";
+            for (let song in songData) {
+                if (userText.includes(song)) {
+                    foundSong = song;
+                    break;
                 }
             }
-            ctx.beginPath();
+            if (foundSong !== "") {
+                aiReply = `「${foundSong}」の歌詞（かし）だね！<br>『 ${songData[foundSong]} 』<br>いい曲だよね！ノリノリになっちゃう！`;
+            }
+        }
+        // 漢字表の大きな辞書データ
+        if (aiReply.includes("難しい質問だね")) {
+            const kanjiData = {
+                "紋": "【訓読み】（常用なし） 【音読み】モン", "治": "【訓読み】おさ（める）、なお（る） 【音読み】ジ、チ", "弥": "【訓読み】いや、いよ 【音読み】ミ、ビ", "厄": "【訓読み】（常用なし） 【音読み】ヤク", "躍": "【訓読み】おど（る） 【音読み】ヤク", "闇": "【訓読み】やみ 【音読み】アン", "喩": "【訓読み】たと（える） 【音読み】ユ", "愉": "【訓読み】たの（しい） 【音読み】ユ", "諭": "【訓読み】さと（す） 【音読み】ユ", "癒": "【訓読み】い（やす） 【音読み】ユ",
+                "唯": "【訓読み】（常用なし） 【音読み】ユイ、イ", "幽": "【訓読み】（常用なし） 【音読み】ユウ", "悠": "【訓読み】（常用なし） 【音読み】ユウ", "湧": "【訓読み】わ（く） 【音読み】ユウ", "猶": "【訓読み】なお 【音読み】ユウ、ユ", "裕": "【訓読み】（常用なし） 【音読み】ユウ", "雄": "【訓読み】お、おす 【音読み】ユウ", "誘": "【訓読み】さそ（う） 【音読み】ユウ", "憂": "【訓読み】うれ（える）、う（い） 【音読み】ユウ", "融": "【訓読み】と（ける） 【音読み】ユウ",
+                "与": "【訓読み】あた（える） 【音読み】ヨ", "誉": "【訓読み】ほま（れ） 【音読み】ヨ", "妖": "【訓読み】あや（しい） 【音読み】ヨ", "庸": "【訓読み】（常用なし） 【音読み】ヨウ", "揚": "【訓読み】あ（げる） 【音読み】ヨウ", "揺": "【訓読み】ゆ（れる） 【音読み】ヨウ", "溶": "【訓読み】と（ける） 【音読み】ヨウ", "腰": "【訓読み】こし 【音読み】ヨウ", "瘍": "【訓読み】（常用なし） 【音読み】ヨウ", "踊": "【訓読み】おど（る） 【音読み】ヨウ",
+                "窯": "【訓読み】かま 【音読み】ヨウ", "擁": "【訓読み】（常用なし） 【音読み】ヨウ", "謡": "【訓読み】うた（う） 【音読み】ヨウ", "抑": "【訓読み】おさ（える） 【音読み】ヨク", "沃": "【訓読み】（常用なし） 【音読み】ヨク", "翼": "【訓読み】つばさ 【音読み】ヨク", "拉": "【訓読み】（常用なし） 【音読み】ラ", "裸": "【訓読み】はだか 【音読み】ラ", "羅": "【訓読み】（常用なし） 【音読み】ラ", "雷": "【訓読み】かみなり 【音読み】ライ",
+                "頼": "【訓読み】たの（む）、たよ（る） 【音読み】ライ", "絡": "【訓読み】から（む） 【音読み】ラク", "酪": "【訓読み】（常用なし） 【音読み】ラク", "辣": "【訓読み】（常用なし） 【音読み】ラツ", "濫": "【訓読み】（常用なし） 【音読み】ラン", "藍": "【訓読み】あい 【音読み】ラン", "欄": "【訓読み】（常用なし） 【音読み】ラン", "吏": "【訓読み】（常用なし） 【音読み】リ", "痢": "【訓読み】（常用なし） 【音読み】リ", "履": "【訓読み】は（く） 【音読み】リ",
+                "璃": "【訓読み】（常用なし） 【音読み】リ", "離": "【訓読み】はな（れる） 【音読み】リ", "慄": "【訓読み】おのの（く） 【音読み】リツ", "柳": "【訓読み】やなぎ 【音読み】リュウ", "竜": "【訓読み】たつ 【音読み】リュウ", "粒": "【訓読み】つぶ 【音読み】リュウ", "隆": "【訓読み】（常用なし） 【音読み】リュウ", "硫": "【訓読み】（常用なし） 【音読み】リュウ", "侶": "【訓読み】とも 【音読み】リョ", "虜": "【訓読み】（常用なし） 【音読み】リョ",
+                "慮": "【訓読み】（常用なし） 【音読み】リョ", "了": "【訓読み】（常用なし） 【音読み】リョウ", "涼": "【訓読み】すず（しい） 【音読み】リョウ", "猟": "【訓読み】（常用なし） 【音読み】リョウ", "陵": "【訓読み】みささぎ 【音読み】リョウ", "僚": "【訓読み】（常用なし） 【音読み】リョウ", "寮": "【訓読み】（常用なし） 【音読み】リョウ", "療": "【訓読み】（常用なし） 【音読み】リョウ", "瞭": "【訓読み】あき（らか） 【音読み】リョウ", "糧": "【訓読み】かて 【音読み】リョウ、ロウ",
+                "厘": "【訓読み】（常用なし） 【音読み】リン", "倫": "【訓読み】（常用なし） 【音読み】リン", "隣": "【訓読み】とな（る） 【音読み】リン", "瑠": "【訓読み】（常用なし） 【音読み】ル", "涙": "【訓読み】なみだ 【音読み】ルイ", "累": "【訓読み】（常用なし） 【音読み】ルイ", "塁": "【訓読み】（常用なし） 【音読み】ルイ", "励": "【訓読み】はげ（む） 【音読み】レイ", "戻": "【訓読み】もど（す） 【音読み】レイ", "鈴": "【訓読み】すず 【音読み】レイ、リン",
+                "零": "【訓読み】（常用なし） 【音読み】レイ", "霊": "【訓読み】たま 【音読み】レイ、リョ", "隷": "【訓読み】（常用なし） 【音読み】レイ", "齢": "【訓読み】よわい 【音読み】レイ", "麗": "【訓読み】うるわ（しい） 【音読み】レイ", "暦": "【訓読み】こよみ 【音読み】レキ", "劣": "【訓読み】おと（る） 【音読み】レツ", "烈": "【訓読み】はげ（しい） 【音読み】レツ", "裂": "【訓読み】さ（く） 【音読み】レツ", "恋": "【訓読み】こい、こい（しい） 【音読み】レン",
+                "廉": "【訓読み】（常用なし） 【音読み】レン", "錬": "【訓読み】ね（る） 【音読み】レン", "呂": "【訓読み】（常用なし） 【音読み】ロ", "炉": "【訓読み】（常用なし） 【音読み】ロ", "略": "【訓読み】（常用なし） 【音読み】リャク", "露": "【訓読み】つゆ 【音読み】ロ、ロウ", "弄": "【訓読み】いじ（る）、もてあそ（ぶ） 【音読み】ロウ", "郎": "【訓読み】おとこ 【音読み】ロウ", "浪": "【訓読み】なみ 【音読み】ロウ", "廊": "【訓読み】（常用なし） 【音読み】ロウ",
+                "楼": "【訓読み】たかど の 【音読み】ロウ", "漏": "【訓読み】も（る） 【音読み】ロウ", "籠": "【訓読み】かご、こ（もる） 【音読み】ロウ", "麓": "【訓読み】ふもと 【音読み】ロク", "賄": "【訓読み】まかな（う） 【音読み】ワイ", "脇": "【訓読み】わき 【音読み】キョウ", "惑": "【訓読み】まど（う） 【音読み】ワク", "枠": "【訓読み】わく", "湾": "【訓読み】（常用なし） 【音読み】ワン", "腕": "【訓読み】うde 【音読み】ワン",
+                "上": "【訓読み】うえ、かみ、あ（げる） 【音読み】ジョウ", "下": "【訓読み2】した、しも、さ（げる） 【音読み】カ、ゲ", "右": "【訓読み】みぎ 【音読み】ウ、ユウ", "左": "【訓読み】ひだり 【音読み】サ", "山": "【訓読み】やま 【音読み】サン", "川": "【訓読み】かわ 【音読み】セン"
+            };
+            let foundKanji = "";
+            for (let kanji in kanjiData) {
+                if (userText.includes(kanji)) {
+                    foundKanji = kanji;
+                    break;
+                }
+            }
+            if (foundKanji !== "") {
+                aiReply = `漢字の「${foundKanji}」の読み方だね！ ${kanjiData[foundKanji]} だよ。国語の勉強もバッチリだね！`;
+            }
         }
 
-        clearBtn.addEventListener('click', () => {
-            if (confirm('ぜんぶ消しちゃって大丈夫？')) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // 47都道府県の県庁所在地データ
+        if (aiReply.includes("難しい質問だね")) {
+            const kenchoData = {
+                "北海道": "札幌市", "青森": "青森市", "岩手": "盛岡市", "宮城": "仙台市", "秋田": "秋田市", "山形": "山形市", "福島": "福島市",
+                "茨城": "水戸市", "栃木": "宇づ宮市", "群馬": "前橋市", "埼玉": "さいたま市", "千葉": "千葉市", "東京": "新宿区", "神奈川": "横浜市",
+                "新潟": "新潟市", "富山": "富山市", "石川": "金沢市", "福井": "福井市", "山梨": "甲府市", "長野": "長市", "岐阜": "岐阜市",
+                "静岡": "静岡市", "愛知": "名古屋市", "三重": "津市", "滋賀": "大津市", "京都": "京都市", "大阪": "大阪市", "兵庫": "神戸市",
+                "奈良": "奈良市", "和歌山": "和歌山市", "鳥取": "鳥取市", "島根": "松江市", "岡山": "岡山市", "広島": "広島市", "山口": "山口市",
+                "徳島": "徳島市", "香川": "高松市", "愛媛": "松山市", "高知": "高知市", "福岡": "福岡市", "佐賀": "佐賀市", "長崎": "長崎市",
+                "熊本": "熊本市", "大分": "大分市", "宮崎": "宮崎市", "鹿児島": "鹿児島市", "沖縄": "那覇市"
+            };
+            let foundPref = "";
+            for (let pref in kenchoData) {
+                if (userText.includes(pref)) {
+                    foundPref = pref;
+                    break;
+                }
             }
-        });
+            if (foundPref !== "") {
+                aiReply = `${foundPref}の県庁所在地は 【 ${kenchoData[foundPref]} 】 だよ！社会の勉強ばっちりだね！`;
+            }
+        }
 
-        downloadBtn.addEventListener('click', () => {
-            const imageURI = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.download = 'edited_picture.png';
-            link.href = imageURI;
-            link.click();
-        });
+        // サイコロ・おみくじ・電卓の仕組み
+        if (aiReply.includes("難しい質問だね")) {
+            if (userText.includes("サイコロ") || userText.includes("さいころ")) {
+                const dice = Math.floor(Math.random() * 6) + 1;
+                aiReply = `コロコロ…🎲 サイコロの目は 【 ${dice} 】 が出たよ！`;
+            } else if (userText.includes("おみくじ") || userText.includes("オミクジ")) {
+                const kujilist = ["凶（きょう）😭", "吉（きち）🙂", "中吉（ちゅうきち）✨", "大吉（だいきち）🎉", "大大吉（だいだいきち）👑🌟"];
+                const randomKuji = kujilist[Math.floor(Math.random() * kujilist.length)];
+                aiReply = `シャカシャカ…ポロン！ 今日の運勢は… 【 ${randomKuji} 】 です！`;
+            } else if (userText.includes("=") || userText.includes("＝") || userText.match(/[0-9]/)) {
+                try {
+                    let kisanText = userText.replace("=", "").replace("＝", "").replace("?", "").replace("？", "");
+                    kisanText = kisanText.replace("×", "*").replace("÷", "/");
+                    if (kisanText.match(/^[0-9+\-*/().\s]+$/)) {
+                        let ans = eval(kisanText);
+                        aiReply = `計算したよ！答えは 【 ${ans} 】 です！算数ならまかせて！`;
+                    }
+                } catch(e) {
+                    aiReply = "算数の計算かな？数字と「+」「-」「×」「÷」を正しく入れてみてね！";
+                }
+            }
+        }
+
+        // いつものおしゃべりの仕組み
+        if (aiReply.includes("難しい質問だね")) {
+            if (userText.includes("こんにちは") || userText.includes("ハロー") || userText.includes("こんばんわ") || userText.includes("こんばんは") || userText.includes("おはよう") || userText.includes("やぁ") || userText.includes("ヤァ") || userText.includes("おーい")) {
+                aiReply = `${aisatsu}。現在時刻は${hours}:${minutes}です。`;
+            } else if (userText.includes("ばか") || userText.includes("あほ") || userText.includes("バカ")) {
+                aiReply = "ばかって言われると悲しいな…つぎは優しくしてね！";
+            } else if (userText.includes("カレー")) {
+                aiReply = "カレーの作り方だね！①お肉、タマネギ、人参、ジャガイモを切って鍋で炒める。②お水を入れて柔らかくなるまで煮込む。③火を止めてカレールーを溶かす。④弱火で少し煮込んだら完成だよ！お腹空いてきちゃった！";
+            } else if (userText.includes("mod") || userText.includes("MOD") || userText.includes("モッド")) {
+                aiReply = "マイクラのmodを入れるなら、パソコンのJava版（ジャバばん）で『Forge（フォージ）』や『Fabric（ファブリック）』というソフトをまずは入れる必要があるよ！壊れやすいからお家の人と一緒にやってね！";
+            } else if (userText.includes("マイクラ") || userText.includes("マインクラフト")) {
+                aiReply = "マイクラ is 楽しいよね！建築（けんちく）をするのが好き？それともサバイバル？";
+            } else if (userText.includes("ゲーム")) {
+                aiReply = "ゲームといえば、マインクラフトやロブロックスが楽しいよね！";
+            } else if (userText.includes("天才") || userText.includes("すごい")) {
+                aiReply = "ありがとう！でもこの画面を作ったきみの方が天才だよ！";
+            } else if (userText.includes("名前")) {
+                aiReply = "ぼくの名前は『AI/cogie0806』だよ。きみが作ってくれたんだ！";
+            } else if (userText.includes("何歳") || userText.includes("年齢")) {
+                aiReply = "ぼくは生まれたばかりだけど、きみと同じ9歳（小学4年生）の気持ちだよ！";
+            }
+        }
+
+        // AIのお返事（左側）
+        setTimeout(() => {
+            chatBox.innerHTML += `
+                <div style="display: flex; align-items: flex-start; gap: 8px; align-self: flex-start; max-width: 85%;">
+                    <img src="rootto.jpg" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; box-shadow: 0px 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                    <div style="background-color: #ffffff; padding: 10px 14px; border-radius: 15px; border-top-left-radius: 2px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1); color: #0084ff; box-sizing: border-box;">
+                        <b>[AI/cogie0806]:</b> ${aiReply}
+                    </div>
+                </div>
+            `;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 500);
+    }
+
+    document.getElementById("user-input").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") sendButton();
+    });
     </script>
 
 </body>
