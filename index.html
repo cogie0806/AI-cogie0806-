@@ -2,6 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <!-- スマホの画面サイズに合わせる設定 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI/cogie0806</title>
   
   <link rel="icon" href="cogie0806.jpg" type="image/jpeg">
@@ -114,12 +116,12 @@
       color: #333;
       padding: 10px 20px;
       border-radius: 20px;
-      max-width: 60%;
+      max-width: 80%;
     }
 
     .ai-wrapper {
       align-self: flex-start;
-      max-width: 80%;
+      max-width: 90%;
     }
 
     .ai {
@@ -179,7 +181,7 @@
     .input-container {
       display: flex;
       justify-content: center;
-      padding: 10px;
+      padding: 10px 0;
     }
 
     .input-box {
@@ -190,7 +192,7 @@
 
     .input-box input {
       width: 100%;
-      padding: 15px 5px 15px 20px;
+      padding: 15px 70px 15px 20px;
       border: 1px solid #e0e0e0;
       border-radius: 30px;
       font-size: 16px;
@@ -200,15 +202,48 @@
 
     .input-box button {
       position: absolute;
-      right: 10px;
+      right: 8px;
       top: 50%;
       transform: translateY(-50%);
       border: none;
       background-color: #333;
       color: white;
-      padding: 8px 15px;
+      padding: 8px 16px;
       border-radius: 20px;
       cursor: pointer;
+    }
+
+    /* --- スマホ向け設定 (画面幅が768px以下の場合) --- */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column; /* 上下に並べる */
+      }
+
+      #sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 160px;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 10px;
+      }
+
+      #history-list {
+        max-height: 60px;
+      }
+
+      #main-content {
+        height: calc(100vh - 160px);
+        padding: 10px;
+      }
+
+      .user {
+        max-width: 85%;
+      }
+
+      .ai-wrapper {
+        max-width: 95%;
+      }
     }
   </style>
 </head>
@@ -380,7 +415,6 @@
       setTimeout(() => {
         let aiResponse = "ごめんなさい、よく分かりません。";
 
-        // --- ここから追加・調整した言葉のルール ---
         if (userText.includes("こんにちは") || userText.includes("やぁ") || userText.includes("やあ")) {
           aiResponse = "こんにちは！お話しできて嬉しいです。";
         } else if (userText.includes("おはよう")) {
@@ -418,7 +452,6 @@
         } else if (userText.includes("宿題") || userText.includes("勉強")) {
           aiResponse = "宿題や勉強、ファイトです！応援していますね！";
         }
-        // --- ここまで ---
 
         currentSession.messages.push({ role: 'ai', text: aiResponse });
         localStorage.setItem('chatSessions', JSON.stringify(sessions));
