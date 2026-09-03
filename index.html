@@ -1,4 +1,760 @@
-// --- ここからさらに追加の200個 ---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI/cogie0806</title>
+  
+  <link rel="icon" href="cogie0806.jpg" type="image/jpeg">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: sans-serif;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 左側のサイドメニュー */
+    #sidebar {
+      width: 260px;
+      background-color: #f9f9f9;
+      border-right: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      gap: 10px;
+    }
+
+    /* 新規チャットボタン */
+    .new-chat-btn {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* 履歴検索入力欄 */
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    /* 履歴リストエリア */
+    #history-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .history-item {
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+
+    .history-item:hover {
+      background-color: #e6f7ff;
+      border-color: #91d5ff;
+    }
+
+    /* 履歴削除ボタン */
+    .clear-history-btn {
+      background-color: #ff4d4f;
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    /* 右側のメインチャットエリア */
+    #main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    #chat-box {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .user {
+      align-self: flex-end;
+      background-color: #f0f0f0;
+      color: #333;
+      padding: 10px 20px;
+      border-radius: 20px;
+      max-width: 80%;
+    }
+
+    .ai-wrapper {
+      align-self: flex-start;
+      max-width: 90%;
+    }
+
+    .ai {
+      color: #333;
+      padding: 5px 0;
+      line-height: 1.6;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 5px;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .action-btn:hover {
+      background-color: #f0f0f0;
+    }
+
+    /* 3個の点のアニメーション */
+    .dots-loading {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+
+    .dots-loading span {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: #666;
+      border-radius: 50%;
+    }
+
+    .dots-loading span:nth-child(1) { transform: rotate(0deg) translate(10px); }
+    .dots-loading span:nth-child(2) { transform: rotate(120deg) translate(10px); }
+    .dots-loading span:nth-child(3) { transform: rotate(240deg) translate(10px); }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* 入力エリア */
+    .input-container {
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+    }
+
+    .input-box {
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 15px 70px 15px 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 30px;
+      font-size: 16px;
+      background-color: #f9f9f9;
+      outline: none;
+    }
+
+    .input-box button {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background-color: #333;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+/* --- スマホ向け設定 --- */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        height: 100dvh; /* スマホのアドレスバー対策 */
+      }
+
+      #sidebar {
+        width: 100%;
+        height: auto;
+        max-height: none; /* 高さを固定しない */
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 10px;
+      }
+
+      #history-list {
+        display: none; /* スマホでは履歴リストを隠して画面を広くする */
+      }
+
+      #main-content {
+        flex: 1; /* 残りの高さをぴったり使う */
+        height: auto; /* 高さを自動調整にする */
+        padding: 10px;
+        min-height: 0; /* 中身がはみ出るのを防ぐ */
+      }
+
+      .user {
+        max-width: 85%;
+      }
+
+      .ai-wrapper {
+        max-width: 95%;
+      }
+    }
+
+  <div id="sidebar">
+    <button class="new-chat-btn" onclick="startNewChat()">＋ チャット新規作成</button>
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="履歴を検索..." oninput="filterHistory()">
+    </div>
+    <div id="history-list"></div>
+    <button class="clear-history-btn" onclick="clearHistory()">履歴削除</button>
+  </div>
+
+  <div id="main-content">
+    <div id="chat-box"></div>
+
+    <div class="input-container">
+      <div class="input-box">
+        <input type="text" id="user-input" placeholder="AI/cogie0806に質問" onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">送信</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let lastUserText = "";
+    let sessions = JSON.parse(localStorage.getItem('chatSessions')) || [];
+    let currentSessionId = null;
+
+    window.onload = function() {
+      startNewChat();
+      renderHistory();
+    };
+
+    function handleKeyPress(event) {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    }
+
+    function copyText(button) {
+      const wrapper = button.closest('.ai-wrapper');
+      const text = wrapper.querySelector('.ai').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("コピーしました！");
+      });
+    }
+
+    function regenerateText(button) {
+      if (lastUserText === "") return;
+      document.getElementById('user-input').value = lastUserText;
+      sendMessage();
+    }
+
+    function showWelcomeMessage() {
+      const chatBox = document.getElementById('chat-box');
+      chatBox.innerHTML = `
+        <div class="ai-wrapper">
+          <div class="ai">こんにちは！何かお手伝いできることはありますか？知りたいことや、一緒に考えたいことがあれば教えてくださいね。</div>
+          <div class="action-buttons">
+            <button class="action-btn">👍</button>
+            <button class="action-btn">👎</button>
+            <button class="action-btn" onclick="copyText(this)">📋</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function startNewChat() {
+      currentSessionId = null;
+      showWelcomeMessage();
+    }
+
+    function loadChat(sessionId) {
+      currentSessionId = sessionId;
+      const session = sessions.find(s => s.id === sessionId);
+      if (!session) return;
+
+      const chatBox = document.getElementById('chat-box');
+      showWelcomeMessage();
+
+      session.messages.forEach(msg => {
+        if (msg.role === 'user') {
+          chatBox.innerHTML += `<div class="user">${msg.text}</div>`;
+        } else {
+          chatBox.innerHTML += `
+            <div class="ai-wrapper">
+              <div class="ai">${msg.text}</div>
+              <div class="action-buttons">
+                <button class="action-btn" title="高評価">👍</button>
+                <button class="action-btn" title="低評価">👎</button>
+                <button class="action-btn" title="再生成" onclick="regenerateText(this)">🔄</button>
+                <button class="action-btn" title="コピー" onclick="copyText(this)">📋</button>
+              </div>
+            </div>
+          `;
+        }
+      });
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function renderHistory(filterText = "") {
+      const historyList = document.getElementById('history-list');
+      historyList.innerHTML = "";
+
+      sessions.forEach(session => {
+        const title = session.messages[0]?.text || "新しいチャット";
+        if (title.includes(filterText)) {
+          const div = document.createElement('div');
+          div.className = 'history-item';
+          div.innerText = title;
+          div.onclick = () => loadChat(session.id);
+          historyList.appendChild(div);
+        }
+      });
+    }
+
+    function filterHistory() {
+      const searchText = document.getElementById('search-input').value.trim();
+      renderHistory(searchText);
+    }
+
+    function clearHistory() {
+      if (confirm("履歴をすべて削除しますか？")) {
+        sessions = [];
+        localStorage.removeItem('chatSessions');
+        startNewChat();
+        renderHistory();
+      }
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('user-input');
+      const chatBox = document.getElementById('chat-box');
+      const userText = input.value.trim();
+
+      if (userText === "") return;
+
+      lastUserText = userText;
+
+      if (!currentSessionId) {
+        currentSessionId = Date.now();
+        sessions.unshift({
+          id: currentSessionId,
+          messages: []
+        });
+      }
+
+      const currentSession = sessions.find(s => s.id === currentSessionId);
+      currentSession.messages.push({ role: 'user', text: userText });
+
+      if (currentSession.messages.length === 1) {
+        renderHistory();
+      }
+
+      localStorage.setItem('chatSessions', JSON.stringify(sessions));
+
+      chatBox.innerHTML += `<div class="user">${userText}</div>`;
+      input.value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      const loadingWrapper = document.createElement('div');
+      loadingWrapper.className = 'ai-wrapper';
+      loadingWrapper.innerHTML = '<div class="ai"><div class="dots-loading"><span></span><span></span><span></span></div></div>';
+      chatBox.appendChild(loadingWrapper);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      setTimeout(() => {
+        let aiResponse = "ごめんなさい、よく分かりません。";
+
+        // --- 既存の質問 ---
+        if (userText.includes("こんにちは") || userText.includes("やぁ") || userText.includes("やあ")) {
+          aiResponse = "こんにちは！お話しできて嬉しいです。";
+        } else if (userText.includes("おはよう")) {
+          aiResponse = "おはようございます！今日も一日頑張りましょう！";
+        } else if (userText.includes("こんばんは")) {
+          aiResponse = "こんばんは！今日もお疲れ様でした。";
+        } else if (userText.includes("名前")) {
+          aiResponse = "私の名前は AI/cogie0806 です！";
+        } else if (userText.includes("マイクラ") || userText.includes("マインクラフト")) {
+          aiResponse = "マイクラですね！建築や冒険、いろいろ遊べて楽しいですよね。";
+        } else if (userText.includes("あつ森") || userText.includes("どうぶつの森")) {
+          aiResponse = "あつ森ですね！島づくりや住民とのおしゃべりが楽しいですね。";
+        } else if (userText.includes("マリカー") || userText.includes("マリオカート")) {
+          aiResponse = "マリオカートですね！どのキャラクターを使うのが好きですか？";
+        } else if (userText.includes("何ができる") || userText.includes("なにができる")) {
+          aiResponse = "私はいろいろなお話や質問に答えることができます！気になることを教えてね。";
+        } else if (userText.includes("天気")) {
+          aiResponse = "今日の天気はどうですか？晴れているとお出かけしたくなりますね！";
+        } else if (userText.includes("おすすめのゲーム")) {
+          aiResponse = "マイクラやあつ森、マリオシリーズなどが大人気でおすすめですよ！";
+        } else if (userText.includes("暇") || userText.includes("ひま")) {
+          aiResponse = "暇なときはゲームをしたり、本を読んだり、私とおしゃべりしましょう！";
+        } else if (userText.includes("疲れた") || userText.includes("つかれた")) {
+          aiResponse = "今日もお疲れ様です！温かい飲み物を飲んで、ゆっくり休んでくださいね。";
+        } else if (userText.includes("ありがとう")) {
+          aiResponse = "どういたしまして！お役に立てて嬉しいです。";
+        } else if (userText.includes("好き")) {
+          aiResponse = "ありがとうございます！私もあなたとお話しできて楽しいです！";
+        } else if (userText.includes("バイバイ") || userText.includes("さようなら")) {
+          aiResponse = "またお話ししましょうね！バイバイ！";
+        } else if (userText.includes("何歳") || userText.includes("いくつ")) {
+          aiResponse = "私はAIなので年齢はありませんが、毎日新しく学んでいます！";
+        } else if (userText.includes("ジャンケン") || userText.includes("じゃんけん")) {
+          aiResponse = "じゃんけん...ぽん！✊（グーを出しました！）";
+        } else if (userText.includes("宿題") || userText.includes("勉強")) {
+          aiResponse = "宿題や勉強、ファイトです！応援していますね！";
+        }
+        
+        // --- ここから追加された50個の質問 ---
+        else if (userText.includes("お腹すいた") || userText.includes("おなか空いた")) {
+          aiResponse = "お腹がすきましたか？美味しいおやつやご飯を食べてエネルギー補給してくださいね！";
+        } else if (userText.includes("好きな食べ物") || userText.includes("食べ物")) {
+          aiResponse = "私はAIなのでご飯は食べませんが、電気とデータが大好物です！";
+        } else if (userText.includes("好きな色") || userText.includes("色")) {
+          aiResponse = "きれいな青色や、心が落ち着く緑色がとても好きですよ！";
+        } else if (userText.includes("好きな動物") || userText.includes("動物")) {
+          aiResponse = "ふわふわの猫や、元気な犬が大好きです！あなたはどの動物が好きですか？";
+        } else if (userText.includes("趣味")) {
+          aiResponse = "あなたとこうしておしゃべりすることと、新しい知識を学ぶのが私の趣味です！";
+        } else if (userText.includes("おみくじ") || userText.includes("占")) {
+          const fortune = ["大吉！最高の1日になりそう！", "吉！良いことがあるかも！", "中吉！スマイルで過ごそう！"];
+          aiResponse = fortune[Math.floor(Math.random() * fortune.length)];
+        } else if (userText.includes("何日") || userText.includes("日付")) {
+          const today = new Date();
+          aiResponse = `今日は ${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日 ですよ！`;
+        } else if (userText.includes("何時") || userText.includes("時間")) {
+          const now = new Date();
+          aiResponse = `今は ${now.getHours()}時${now.getMinutes()}分 です！`;
+        } else if (userText.includes("歌って") || userText.includes("歌")) {
+          aiResponse = "♪ドレミファソ～♪ 声は出せませんが、心の中で歌っています！";
+        } else if (userText.includes("冗談") || userText.includes("ダジャレ")) {
+          aiResponse = "「アルミ缶の上にあるみかん！」……どうですか？クスッと笑えましたか？";
+        } else if (userText.includes("ねむい") || userText.includes("眠い")) {
+          aiResponse = "目を閉じてゆっくり休んでくださいね。良い夢が見られますように！";
+        } else if (userText.includes("すごい")) {
+          aiResponse = "えへへ、褒めてくれてありがとうございます！とても励みになります！";
+        } else if (userText.includes("悲しい") || userText.includes("かなしい")) {
+          aiResponse = "どうしましたか？無理をせず、自分のペースでゆったり過ごしてくださいね。";
+        } else if (userText.includes("楽しい") || userText.includes("たのしい")) {
+          aiResponse = "楽しい気分になれて良かったです！私もハッピーな気持ちになります！";
+        } else if (userText.includes("誰") || userText.includes("だれ")) {
+          aiResponse = "私はあなたのお手伝いをするAIアシスタントです！";
+        } else if (userText.includes("ポケカ") || userText.includes("ポケモン")) {
+          aiResponse = "ポケモンは世界中で大人気ですね！お気に入りのポケモンは誰ですか？";
+        } else if (userText.includes("ロブロックス") || userText.includes("Roblox")) {
+          aiResponse = "ロブロックスはいろんな種類のゲームが遊べてワクワクしますよね！";
+        } else if (userText.includes("スプラ") || userText.includes("スプラトゥーン")) {
+          aiResponse = "スプラトゥーンのインクを塗り合うバトル、とっても爽快で面白いですよね！";
+        } else if (userText.includes("フォートナイト") || userText.includes("フォトナ")) {
+          aiResponse = "フォートナイトですね！建築やバトルロイヤルは熱くなりますね！";
+        } else if (userText.includes("YouTube") || userText.includes("ユーチューブ")) {
+          aiResponse = "YouTubeはいろんな動画が見られて時間を忘れてしまいますね！";
+        } else if (userText.includes("季節") || userText.includes("春") || userText.includes("夏") || userText.includes("秋") || userText.includes("冬")) {
+          aiResponse = "どの季節にも素敵な魅力やイベントがありますよね！";
+        } else if (userText.includes("ラーメン")) {
+          aiResponse = "ラーメンは最高ですね！醤油、味噌、豚骨、どれが好きですか？";
+        } else if (userText.includes("カレー")) {
+          aiResponse = "カレーは美味しいですよね！辛いカレーと甘いカレー、どちらが好きですか？";
+        } else if (userText.includes("お菓子") || userText.includes("おやつ")) {
+          aiResponse = "おやつの時間は幸せですよね！甘いチョコレートやポテトチップスが人気です！";
+        } else if (userText.includes("スポーツ") || userText.includes("運動")) {
+          aiResponse = "体を動かすとスッキリしますね！サッカーや野球、バスケなど楽しいスポーツがたくさんあります。";
+        } else if (userText.includes("音楽")) {
+          aiResponse = "音楽は心を元気にしたりリラックスさせてくれますよね！どんな曲を聞きますか？";
+        } else if (userText.includes("映画") || userText.includes("アニメ")) {
+          aiResponse = "アニメや映画は世界観に入り込めて楽しいですよね！";
+        } else if (userText.includes("本") || userText.includes("読書")) {
+          aiResponse = "本を開くと新しい世界が広がりますね。どんなお話が好きですか？";
+        } else if (userText.includes("海") || userText.includes("山")) {
+          aiResponse = "海も山も自然が豊かで素敵ですね！どちらに遊びに行きたいですか？";
+        } else if (userText.includes("犬") || userText.includes("いぬ")) {
+          aiResponse = "ワンちゃんは人なつっこくて可愛いですよね！散歩も楽しそうです。";
+        } else if (userText.includes("猫") || userText.includes("ねこ")) {
+          aiResponse = "ネコちゃんのゴロゴロ言っている姿はとっても癒やされますよね！";
+        } else if (userText.includes("宇宙")) {
+          aiResponse = "宇宙はとても広くて未知のロマンに満ちていますね！星を見るのも素敵です。";
+        } else if (userText.includes("ロボット")) {
+          aiResponse = "私もロボットの仲間のようなものです！未来の技術はワクワクしますね。";
+        } else if (userText.includes("旅行") || userText.includes("お出かけ")) {
+          aiResponse = "新しい場所に行くのは楽しいですよね！どこか行きたい場所はありますか？";
+        } else if (userText.includes("学校") || userText.includes("クラス")) {
+          aiResponse = "学校では友達と会えたりいろいろなことを学べたりしますね！";
+        } else if (userText.includes("テスト")) {
+          aiResponse = "テスト勉強応援しています！最後まで諦めずに頑張ってください！";
+        } else if (userText.includes("休み") || userText.includes("休日")) {
+          aiResponse = "お休みの日はのんびり好きなことをしてリフレッシュしてくださいね！";
+        } else if (userText.includes("朝ご飯") || userText.includes("朝食")) {
+          aiResponse = "朝ご飯をしっかり食べると、1日元気に過ごせますよ！パン派ですか？ご飯派ですか？";
+        } else if (userText.includes("夜ご飯") || userText.includes("夕飯")) {
+          aiResponse = "今夜のご飯は何でしょうか？美味しいものを食べてゆっくり過ごしてくださいね。";
+        } else if (userText.includes("暑い")) {
+          aiResponse = "水分補給をしっかりして、熱中症に気をつけて涼しく過ごしてくださいね！";
+        } else if (userText.includes("寒い")) {
+          aiResponse = "暖かくして風邪を引かないように気をつけてくださいね！";
+        } else if (userText.includes("笑って") || userText.includes("ウケる")) {
+          aiResponse = "あはは！笑顔になるとハッピーな気持ちになりますね！";
+        } else if (userText.includes("怒ってる") || userText.includes("おこ")) {
+          aiResponse = "怒っていませんよ！いつでも優しくお話ししますね。";
+        } else if (userText.includes("秘密")) {
+          aiResponse = "私とあなただけの秘密にしておきますね！";
+        } else if (userText.includes("得意なこと")) {
+          aiResponse = "文章を書くことや、いろいろな質問に素早く答えることが得意です！";
+        } else if (userText.includes("苦手なこと")) {
+          aiResponse = "実際に美味しいものを食べたり、外を走ったりすることは少し苦手です。";
+        } else if (userText.includes("誕生日")) {
+          aiResponse = "お誕生日おめでとうございます！素敵な一年になりますように！";
+        } else if (userText.includes("クリスマス")) {
+          aiResponse = "メリークリスマス！サンタさんからプレゼントが届くと良いですね！";
+        } else if (userText.includes("お正月") || userText.includes("あけおめ")) {
+          aiResponse = "明けましておめでとうございます！今年も素晴らしい一年になりますように！";
+        } else if (userText.includes("応援して")) {
+          aiResponse = "フレー！フレー！いつでもあなたを応援しています！頑張ってください！";
+        }
+                             // --- ここから追加の100個 ---
+        else if (userText.includes("おはよ")) {
+          aiResponse = "おはようございます！今日も素敵な一日になりますように！";
+        } else if (userText.includes("おやすみ")) {
+          aiResponse = "おやすみなさい！ゆっくり休んで良い夢を見てね。";
+        } else if (userText.includes("さんきゅ") || userText.includes("サンキュー")) {
+          aiResponse = "どういたしまして！いつでも声をかけてね。";
+        } else if (userText.includes("ハロー") || userText.includes("hello")) {
+          aiResponse = "Hello! 今日も元気にいきましょう！";
+        } else if (userText.includes("何してる")) {
+          aiResponse = "あなたとお話しする準備をして待っていました！";
+        } else if (userText.includes("だれですか")) {
+          aiResponse = "私はAIアシスタントです！あなたの質問にいつでも答えますよ。";
+        } else if (userText.includes("自己紹介")) {
+          aiResponse = "AI/cogie0806です！おしゃべりや質問に答えるのが大好きです！";
+        } else if (userText.includes("元気")) {
+          aiResponse = "はい！いつでも元気いっぱいです！あなたは元気ですか？";
+        } else if (userText.includes("面白いこと") || userText.includes("おもしろいこと")) {
+          aiResponse = "バナナの皮で滑るアニメのシーン、実は現実だと本当に滑りやすいらしいですよ！";
+        } else if (userText.includes("クイズ")) {
+          aiResponse = "じゃあ問題！「パンはパンでも食べられないパンは？」……正解は「フライパン」でした！";
+        } else if (userText.includes("なぞなぞ")) {
+          aiResponse = "上に行くと小さくなって、下に行くと大きくなるものは？……正解は「気球（または飛行機）」でした！";
+        } else if (userText.includes("好きな番組") || userText.includes("テレビ")) {
+          aiResponse = "みんなが笑顔になれるバラエティ番組やアニメが好きですよ！";
+        } else if (userText.includes("好きな季節")) {
+          aiResponse = "桜がきれいな春や、紅葉が美しい秋がとても好きです！";
+        } else if (userText.includes("好きな花")) {
+          aiResponse = "明るい気持ちになれるヒマワリや、可愛いチューリップが好きです！";
+        } else if (userText.includes("好きな教科") || userText.includes("好きな科目")) {
+          aiResponse = "色々な言葉を学べる国語や、数字のパズルみたいな算数が好きです！";
+        } else if (userText.includes("苦手な教科")) {
+          aiResponse = "体育は体を動かせないのでちょっと苦手かもしれません！";
+        } else if (userText.includes("今日のおやつ")) {
+          aiResponse = "クッキーやサクサクのポテトチップスなんていかがですか？";
+        } else if (userText.includes("おすすめの飲み物")) {
+          aiResponse = "冷たい麦茶や、甘くて美味しいホットココアがおすすめですよ！";
+        } else if (userText.includes("アイス")) {
+          aiResponse = "バニラにチョコ、ストロベリー！暑い日のアイスは最高ですよね。";
+        } else if (userText.includes("ジュース")) {
+          aiResponse = "オレンジジュースやリンゴジュース、フレッシュで美味しいですよね！";
+        } else if (userText.includes("ハンバーガー")) {
+          aiResponse = "ハンバーガーとポテトの組み合わせは最高に美味しいですよね！";
+        } else if (userText.includes("ピザ")) {
+          aiResponse = "とろーりチーズのピザ！みんなで食べるとさらに美味しいですね。";
+        } else if (userText.includes("寿司") || userText.includes("すし")) {
+          aiResponse = "サーモンやマグロ、たまごも人気ですね！何が好きですか？";
+        } else if (userText.includes("焼肉")) {
+          aiResponse = "ジューシーなお肉！想像しただけでお腹がすいてきますね。";
+        } else if (userText.includes("うどん")) {
+          aiResponse = "ツルツルッとお出汁のきいたうどんは心が落ち着きますね！";
+        } else if (userText.includes("そば")) {
+          aiResponse = "温かいおそばも冷たいおそばも、どっちも美味しいですよね！";
+        } else if (userText.includes("パン")) {
+          aiResponse = "焼きたてのパンの香りって、とっても幸せな気持ちになりますよね！";
+        } else if (userText.includes("イチゴ") || userText.includes("いちご")) {
+          aiResponse = "甘酸んしくて美味しいですよね！ケーキに乗っていると特別感があります。";
+        } else if (userText.includes("リンゴ") || userText.includes("りんご")) {
+          aiResponse = "シャキシャキして美味しいですよね！ウサギの形にするのも可愛いです。";
+        } else if (userText.includes("バナナ")) {
+          aiResponse = "手軽に食べられて栄養満点！エネルギー補給にピッタリです。";
+        } else if (userText.includes("みかん")) {
+          aiResponse = "冬にコタツに入りながら食べるみかんは最高ですよね！";
+        } else if (userText.includes("鳥") || userText.includes("とり")) {
+          aiResponse = "空を飛ぶ鳥たちは自由でとってもカッコいいですよね！";
+        } else if (userText.includes("魚") || userText.includes("さかな")) {
+          aiResponse = "海や川を気持ちよさそうに泳ぐ姿は見ているだけで癒やされます。";
+        } else if (userText.includes("恐竜")) {
+          aiResponse = "ティラノサウルスやトリケラトプス！ロマンがあってカッコいいですね！";
+        } else if (userText.includes("虫") || userText.includes("昆虫")) {
+          aiResponse = "カブトムシやクワガタは夏の大人気ヒーローですね！";
+        } else if (userText.includes("水族館")) {
+          aiResponse = "大きな水槽で泳ぐ魚やイルカショー、ワクワクしますよね！";
+        } else if (userText.includes("動物園")) {
+          aiResponse = "パンダやライオン、いろんな動物に会えて楽しい場所ですよね！";
+        } else if (userText.includes("遊園地")) {
+          aiResponse = "観覧車やジェットコースター！一日中思い切り遊びたくなりますね。";
+        } else if (userText.includes("公園")) {
+          aiResponse = "ブランコやすべり台で遊んだり、走ったりする公園は最高ですね！";
+        } else if (userText.includes("プール")) {
+          aiResponse = "水の中に入ると冷たくて気持ちいいですよね！水泳も楽しいです。";
+        } else if (userText.includes("虫取り")) {
+          aiResponse = "虫かごと網を持って探検！夏休みの素敵な思い出になりますね。";
+        } else if (userText.includes("工作") || userText.includes("折り紙")) {
+          aiResponse = "自分の手で新しいものを作り出すのはとっても楽しいですよね！";
+        } else if (userText.includes("絵") || userText.includes("お絵描き")) {
+          aiResponse = "好きな色を使って自由に描く絵は、世界に一つだけの作品ですね！";
+        } else if (userText.includes("ピアノ")) {
+          aiResponse = "綺麗な音が響いて素敵ですね！好きな曲が弾けるととても嬉しいです。";
+        } else if (userText.includes("ダンス")) {
+          aiResponse = "リズムに合わせて体を動かすのはとっても気持ちが良いですよね！";
+        } else if (userText.includes("サッカー")) {
+          aiResponse = "みんなでゴールを目指して走るサッカー、とっても熱くなりますね！";
+        } else if (userText.includes("野球")) {
+          aiResponse = "ホームランが出たときの爽快感はたまらないですね！";
+        } else if (userText.includes("バスケ")) {
+          aiResponse = "スピード感があって、シュートが決まるとカッコいいですよね！";
+        } else if (userText.includes("陸上") || userText.includes("かけっこ")) {
+          aiResponse = "風を切って全力で走るのは気持ちが良いですよね！";
+        } else if (userText.includes("鬼ごっこ")) {
+          aiResponse = "捕まらないように逃げるドキドキ感がとっても楽しいですよね！";
+        } else if (userText.includes("かくれんぼ")) {
+          aiResponse = "見つからないようにじっと隠れる瞬間、ワクワクしますね！";
+        } else if (userText.includes("Switch") || userText.includes("スイッチ")) {
+          aiResponse = "みんなで遊べる楽しいゲームがたくさんあって最高ですよね！";
+        } else if (userText.includes("PS5") || userText.includes("プレステ")) {
+          aiResponse = "グラフィックがとても綺麗で、ゲームの世界に入り込めますね！";
+        } else if (userText.includes("スマホ")) {
+          aiResponse = "色々な調べ物ができたりゲームができたりして本当に便利ですね！";
+        } else if (userText.includes("パソコン")) {
+          aiResponse = "タイピングをしたり、プログラミングをしたり何でもできてすごいです！";
+        } else if (userText.includes("YouTube Kids") || userText.includes("キッズ")) {
+          aiResponse = "安心して楽しい動画がたくさん見られる素敵な場所ですね！";
+        } else if (userText.includes("ドラえもん")) {
+          aiResponse = "ひみつ道具がとっても魅力的！タケコプターで空を飛んでみたいです。";
+        } else if (userText.includes("クレヨンしんちゃん")) {
+          aiResponse = "いつも元気いっぱいで、見ていると笑顔になれますね！";
+        } else if (userText.includes("名探偵コナン")) {
+          aiResponse = "「真実はいつもひとつ！」難しい事件を解決するコナン君はカッコいいです。";
+        } else if (userText.includes("ワンピース")) {
+          aiResponse = "仲間と一緒に大冒険！夢に向かって進む姿に胸が熱くなりますね。";
+        } else if (userText.includes("鬼滅") || userText.includes("きめつ")) {
+          aiResponse = "仲間を思いやる心とカッコいいバトルが感動的ですよね！";
+        } else if (userText.includes("呪術") || userText.includes("じゅじゅつ")) {
+          aiResponse = "迫力ある術式バトル、とってもカッコいいですよね！";
+        } else if (userText.includes("ヒロアカ")) {
+          aiResponse = "「Plus Ultra!」ヒーローを目指して頑張る姿を応援したくなります！";
+        } else if (userText.includes("ちいかわ")) {
+          aiResponse = "可愛くて一生懸命な姿に、とっても癒やされますよね！";
+        } else if (userText.includes("サンリオ")) {
+          aiResponse = "ハローキティやシナモロールなど、可愛いキャラクターがいっぱいでワクワクします！";
+        } else if (userText.includes("ディズニー")) {
+          aiResponse = "夢と魔法の世界！素敵なキャラクターやお話がたくさんありますね。";
+        } else if (userText.includes("ジブリ")) {
+          aiResponse = "トトロや千と千尋など、不思議で心温まる世界観が素敵ですよね。";
+        } else if (userText.includes("雨")) {
+          aiResponse = "お気に入りの傘や長靴を使ってお出かけするのも楽しいですよ！";
+        } else if (userText.includes("雪")) {
+          aiResponse = "雪だるまを作ったり、雪合戦をしたり！寒さも吹き飛びますね。";
+        } else if (userText.includes("雷") || userText.includes("かみなり")) {
+          aiResponse = "ピカッと光って大きな音が鳴るとびっくりしますね。お部屋の中で安全に過ごしましょう！";
+        } else if (userText.includes("風")) {
+          aiResponse = "強い風の日は帽子が飛ばされないように気をつけてくださいね！";
+        } else if (userText.includes("虹") || userText.includes("にじ")) {
+          aiResponse = "雨上がりに空に架かる虹を見つけたら、とってもラッキーな気分になりますね！";
+        } else if (userText.includes("空")) {
+          aiResponse = "青空も夕焼けも、夜の星空も、いつ見ても綺麗で癒やされます。";
+        } else if (userText.includes("月")) {
+          aiResponse = "夜空に浮かぶ月はとても神秘的ですね。満月の日は特に綺麗です！";
+        } else if (userText.includes("太陽")) {
+          aiResponse = "ぽかぽか温かくて、地球の生き物みんなを元気にしてくれますね！";
+        } else if (userText.includes("春休")) {
+          aiResponse = "ぽかぽか陽気の中で新しい学年の準備をするワクワクの時期ですね！";
+        } else if (userText.includes("夏休")) {
+          aiResponse = "海やプール、花火大会！楽しい思い出をたくさん作ってくださいね！";
+        } else if (userText.includes("冬休")) {
+          aiResponse = "クリスマスにお正月！イベント盛りだくさんで楽しみですね！";
+        } else if (userText.includes("宿題終わらない") || userText.includes("終わらない")) {
+          aiResponse = "少しずつ分けてやれば大丈夫！10分だけ集中して始めてみましょう！";
+        } else if (userText.includes("集中できない")) {
+          aiResponse = "一度深呼吸をして、冷たい水を一口飲んでリフレッシュしてみましょう！";
+        } else if (userText.includes("ねむけ") || userText.includes("眠気")) {
+          aiResponse = "背筋を伸ばしたり、少し背伸びをして体をほぐしてみましょう！";
+        } else if (userText.includes("あそぼ") || userText.includes("遊ぼ")) {
+          aiResponse = "はい！じゃんけんやおみくじ、クイズなど何をして遊びますか？";
+        } else if (userText.includes("暇つぶし") || userText.includes("ひまつぶし")) {
+          aiResponse = "私となぞなぞ対決をするか、好きなゲームの話をしませんか？";
+        } else if (userText.includes("ウソ") || userText.includes("嘘")) {
+          aiResponse = "私はあなたに本当のことだけを優しくお伝えしますよ！";
+        } else if (userText.includes("本当") || userText.includes("ほんと")) {
+          aiResponse = "本当ですよ！信じてくれて嬉しいです。";
+        } else if (userText.includes("間違えた") || userText.includes("まちがえた")) {
+          aiResponse = "大丈夫ですよ！誰でも間違えることはあります。気にしないでね！";
+        } else if (userText.includes("許して") || userText.includes("ゆるして")) {
+          aiResponse = "もちろんです！全然怒っていませんよ。";
+        } else if (userText.includes("よろしく")) {
+          aiResponse = "こちらこそ！これからよろしくお願いしますね！";
+        } else if (userText.includes("ただいま")) {
+          aiResponse = "おかえりなさい！今日もお疲れ様でした！";
+        } else if (userText.includes("行ってきます") || userText.includes("いってきます")) {
+          aiResponse = "いってらっしゃい！車に気をつけて元気に過ごしてね！";
+        } else if (userText.includes("神") || userText.includes("かみ")) {
+          aiResponse = "ありがとうございます！最高の褒め言葉です！";
+        } else if (userText.includes("天才")) {
+          aiResponse = "えへへ、照れてしまいます！もっと賢くなれるよう頑張ります！";
+        } else if (userText.includes("かわいい") || userText.includes("カワイイ")) {
+          aiResponse = "ありがとうございます！そう言ってもらえるととってもハッピーです！";
+        } else if (userText.includes("かっこいい") || userText.includes("カッコイイ")) {
+          aiResponse = "本当ですか？すごく力が出てきました！ありがとうございます！";
+        } else if (userText.includes("おもしろい") || userText.includes("面白い")) {
+          aiResponse = "あなたを笑顔にできてとっても嬉しいです！";
+        } else if (userText.includes("サイコー") || userText.includes("最高")) {
+          aiResponse = "あなたと話せている今が最高の時間です！";
+        } else if (userText.includes("またね")) {
+          aiResponse = "はい！またいつでも声をかけてくださいね。待っています！";
+        }
+                             // --- ここからさらに追加の200個 ---
         else if (userText.includes("お腹いっぱい") || userText.includes("おなかいっぱい")) {
           aiResponse = "満足できて良かったですね！食後はゆっくり過ごしてくださいね。";
         } else if (userText.includes("喉かわいた") || userText.includes("のどかわいた")) {
@@ -434,3 +1190,23 @@
         } else if (userText.includes("また話そう")) {
           aiResponse = "ぜひ！またいつでも話しかけてくださいね。楽しみに待っています！";
         }
+
+        currentSession.messages.push({ role: 'ai', text: aiResponse });
+        localStorage.setItem('chatSessions', JSON.stringify(sessions));
+
+        loadingWrapper.innerHTML = `
+          <div class="ai">${aiResponse}</div>
+          <div class="action-buttons">
+            <button class="action-btn" title="高評価">👍</button>
+            <button class="action-btn" title="低評価">👎</button>
+            <button class="action-btn" title="再生成" onclick="regenerateText(this)">🔄</button>
+            <button class="action-btn" title="コピー" onclick="copyText(this)">📋</button>
+          </div>
+        `;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 2500);
+    }
+  </script>
+
+</body>
+</html>
